@@ -1,0 +1,61 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/lib/promtail/positions.yaml
+
+clients:
+  - url: http://16.24.169.121:3100/loki/api/v1/push
+    # Replace YOUR-LOKI-EC2-IP with actual IP of EC2 #2
+
+scrape_configs:
+  - job_name: cloudtrail
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: cloudtrail
+          __path__: /var/log/cloudtrail-processed/*.log
+    
+    pipeline_stages:
+      # Parse JSON log lines
+      - json:
+          expressions:
+            timestamp: timestamp
+            event_name: event_name
+            event_source: event_source
+            user_type: user_type
+            principal_id: principal_id
+            arn: arn
+            access_key_id: access_key_id
+            source_ip: source_ip
+            user_agent: user_agent
+            aws_region: aws_region
+            error_code: error_code
+            error_message: error_message
+            success: success
+      
+      # Use CloudTrail timestamp
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+      
+      # Add labels for filtering in Grafana
+      - labels:
+          event_name:
+          event_source:
+          user_type:
+          access_key_id:
+          aws_region:
+          success:
+          error_code:
+      
+      # Format output
+      - output:
+          source: output
+      
+      # Template for log line
+      - template:
+          source: output
+          template: '{{ .event_name }} by {{ .principal_id }} ({{ .access_key_id }}) from {{ .source_ip }} - Success: {{ .success }}'

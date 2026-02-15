@@ -1,0 +1,74 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+
+scrape_configs:
+  # CloudTrail logs from S3
+  - job_name: aws_cloudtrail
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: aws_cloudtrail
+          __path__: /var/log/cloudtrail/**/*.json.gz
+
+    pipeline_stages:
+      # Read JSON from CloudTrail
+      - json:
+          expressions:
+            records: Records
+
+      # Expand Records array
+      - json:
+          source: records
+          expressions:
+            eventTime: eventTime
+            eventName: eventName
+            eventSource: eventSource
+            sourceIPAddress: sourceIPAddress
+            userAgent: userAgent
+            awsRegion: awsRegion
+            errorCode: errorCode
+            errorMessage: errorMessage
+            userIdentity: userIdentity
+            requestParameters: requestParameters
+            responseElements: responseElements
+            resources: resources
+            readOnly: readOnly
+            eventID: eventID
+
+      # Extract user identity fields
+      - json:
+          source: userIdentity
+          expressions:
+            userName: userName
+            userType: type
+            accessKeyId: accessKeyId
+            accountId: accountId
+            principalId: principalId
+            arn: arn
+
+      # Create labels
+      - labels:
+          event_name: eventName
+          event_source: eventSource
+          source_ip: sourceIPAddress
+          region: awsRegion
+          user: userName
+          user_type: userType
+          access_key: accessKeyId
+          account_id: accountId
+
+      # Format output
+      - template:
+          source: output
+          template: '{{ .eventTime }} | User: {{ .userName }} ({{ .userType }}) | Event: {{ .eventName }} | Service: {{ .eventSource }} | IP: {{ .sourceIPAddress }} | Region: {{ .awsRegion }}{{ if .errorCode }} | Error: {{ .errorCode }}{{ end }}'
+
+      - output:
+          source: output

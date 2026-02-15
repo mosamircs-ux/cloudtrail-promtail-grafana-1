@@ -1,0 +1,23 @@
+# AWS Configuration
+aws:
+  region: me-south-1  # Change to your AWS region
+  s3_bucket: aws-cloudtrail-logs-124737196430-56a3b94b  # Change to your CloudTrail S3 bucket
+  s3_prefix: AWSLogs/  # CloudTrail prefix (usually AWSLogs/)
+
+# Loki Configuration (for reference, actual connection is via Promtail)
+loki:
+  url: https://16.24.169.121:3100  # EC2 #2 Loki endpoint
+
+# Processing Configuration
+run_mode: loop  # 'once' for cron, 'loop' for systemd service
+interval_seconds: 300  # Check for new logs every 5 minutes (if run_mode is 'loop')
+
+# Output Configuration
+output_dir: /var/log/cloudtrail-processed  # Where to write processed logs
+state_file: /var/lib/promtail/cloudtrail-state.json  # Track processing state
+
+# Retention
+retention_days: 7  # Keep processed logs for 7 days before cleanup
+
+# Logging
+log_level: INFO  # DEBUG, INFO, WARNING, ERROR

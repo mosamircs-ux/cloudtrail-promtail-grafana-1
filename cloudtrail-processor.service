@@ -1,0 +1,21 @@
+[Unit]
+Description=CloudTrail S3 Log Processor
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/cloudtrail-processor
+ExecStart=/opt/cloudtrail-processor/venv/bin/python /opt/cloudtrail-processor/cloudtrail_processor.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
