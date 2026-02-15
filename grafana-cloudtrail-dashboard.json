@@ -1,0 +1,3007 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [],
+    "panels": [
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "bars",
+                        "fillOpacity": 100,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "tooltip": false,
+                            "viz": false,
+                            "legend": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "normal"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 2,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single"
+                }
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "sum by (event_name) (count_over_time({job=\"cloudtrail\"}[$__interval]))",
+                    "refId": "A"
+                }
+            ],
+            "title": "CloudTrail Events Over Time",
+            "type": "timeseries"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 0,
+                "y": 8
+            },
+            "id": 4,
+            "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                    "values": false,
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": ""
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {}
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "sum(count_over_time({job=\"cloudtrail\"}[$__range]))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Total Events",
+            "type": "gauge"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 1
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 8,
+                "y": 8
+            },
+            "id": 6,
+            "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                    "values": false,
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": ""
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {}
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "sum(count_over_time({job=\"cloudtrail\", success=\"false\"}[$__range]))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Failed Events",
+            "type": "gauge"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 16,
+                "y": 8
+            },
+            "id": 8,
+            "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                    "values": false,
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": ""
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {}
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "count(count by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\"}[$__range])))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Unique Access Keys",
+            "type": "gauge"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "tooltip": false,
+                            "viz": false,
+                            "legend": false
+                        }
+                    },
+                    "mappings": []
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 16
+            },
+            "id": 10,
+            "options": {
+                "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "values": [
+                        "value"
+                    ]
+                },
+                "pieType": "pie",
+                "tooltip": {
+                    "mode": "single"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\"}[$__range]))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Events by Access Key",
+            "type": "piechart"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "tooltip": false,
+                            "viz": false,
+                            "legend": false
+                        }
+                    },
+                    "mappings": []
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 16
+            },
+            "id": 12,
+            "options": {
+                "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "values": [
+                        "value"
+                    ]
+                },
+                "pieType": "pie",
+                "tooltip": {
+                    "mode": "single"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "sum by (event_name) (count_over_time({job=\"cloudtrail\"}[$__range]))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Top Event Names",
+            "type": "piechart"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 24
+            },
+            "id": 14,
+            "options": {
+                "showHeader": true,
+                "sortBy": []
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\"}",
+                    "refId": "A"
+                }
+            ],
+            "title": "Recent CloudTrail Events",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "error_code"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "mode": "thresholds"
+                                }
+                            },
+                            {
+                                "id": "thresholds",
+                                "value": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 1
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 32
+            },
+            "id": 16,
+            "options": {
+                "showHeader": true,
+                "sortBy": []
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", success=\"false\"}",
+                    "refId": "A"
+                }
+            ],
+            "title": "Failed Events (Errors)",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "tooltip": false,
+                            "viz": false,
+                            "legend": false
+                        }
+                    },
+                    "mappings": []
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 40
+            },
+            "id": 18,
+            "options": {
+                "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "values": [
+                        "value"
+                    ]
+                },
+                "pieType": "pie",
+                "tooltip": {
+                    "mode": "single"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "sum by (aws_region) (count_over_time({job=\"cloudtrail\"}[$__range]))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Events by AWS Region",
+            "type": "piechart"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "tooltip": false,
+                            "viz": false,
+                            "legend": false
+                        }
+                    },
+                    "mappings": []
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 40
+            },
+            "id": 20,
+            "options": {
+                "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "values": [
+                        "value"
+                    ]
+                },
+                "pieType": "pie",
+                "tooltip": {
+                    "mode": "single"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "sum by (user_type) (count_over_time({job=\"cloudtrail\"}[$__range]))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Events by User Type",
+            "type": "piechart"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "success"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "✓ Success"
+                                            },
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "✗ Failed"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 24,
+                "x": 0,
+                "y": 48
+            },
+            "id": 22,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "timestamp"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "Access Key Activity & Resources",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true,
+                            "request_parameters": true,
+                            "response_elements": true,
+                            "user_agent": true
+                        },
+                        "indexByName": {
+                            "timestamp": 0,
+                            "access_key_id": 1,
+                            "event_name": 2,
+                            "resources": 3,
+                            "aws_region": 4,
+                            "source_ip": 5,
+                            "principal_id": 6,
+                            "success": 7,
+                            "error_code": 8,
+                            "error_message": 9
+                        },
+                        "renameByName": {
+                            "timestamp": "Time",
+                            "access_key_id": "Access Key",
+                            "event_name": "Event",
+                            "resources": "Resources",
+                            "aws_region": "Region",
+                            "source_ip": "Source IP",
+                            "principal_id": "User",
+                            "success": "Status",
+                            "error_code": "Error Code",
+                            "error_message": "Error Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Count"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 12,
+                "x": 0,
+                "y": 48
+            },
+            "id": 22,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Count"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "sum by (access_key_id, event_name) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\"}[$__range]))",
+                    "refId": "A",
+                    "legendFormat": "{{access_key_id}} - {{event_name}}"
+                }
+            ],
+            "title": "Access Key → Resource Usage (What Each Key Accesses)",
+            "transformations": [
+                {
+                    "id": "groupBy",
+                    "options": {
+                        "fields": {
+                            "Value": {
+                                "aggregations": [
+                                    "sum"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "access_key_id": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            },
+                            "event_name": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {
+                            "access_key_id": 0,
+                            "event_name": 1,
+                            "Value (sum)": 2
+                        },
+                        "renameByName": {
+                            "access_key_id": "Access Key",
+                            "event_name": "Resource/Action",
+                            "Value (sum)": "Count"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Count"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 12,
+                "x": 12,
+                "y": 48
+            },
+            "id": 24,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Count"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\"} | json | line_format \"{{.event_name}}|||{{.access_key_id}}|||{{.resources}}\"",
+                    "refId": "A"
+                }
+            ],
+            "title": "Resource → Access Keys (Who Has Access to Each Resource)",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "auto",
+                        "source": "Line"
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 20,
+                        "gradientMode": "opacity",
+                        "hideFrom": {
+                            "tooltip": false,
+                            "viz": false,
+                            "legend": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 2,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 58
+            },
+            "id": 26,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "sum",
+                        "last"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right"
+                },
+                "tooltip": {
+                    "mode": "multi"
+                }
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\"}[$__interval]))",
+                    "refId": "A",
+                    "legendFormat": "{{access_key_id}}"
+                }
+            ],
+            "title": "Access Key Activity Timeline (Usage Over Time)",
+            "type": "timeseries"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 100
+                            },
+                            {
+                                "color": "orange",
+                                "value": 500
+                            },
+                            {
+                                "color": "red",
+                                "value": 1000
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Total Actions"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            },
+                            {
+                                "id": "custom.width",
+                                "value": 150
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Failed Actions"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "mode": "thresholds"
+                                }
+                            },
+                            {
+                                "id": "thresholds",
+                                "value": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 1
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 24,
+                "x": 0,
+                "y": 66
+            },
+            "id": 28,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Total Actions"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\"}[$__range]))",
+                    "refId": "A",
+                    "legendFormat": "{{access_key_id}}"
+                },
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\", success=\"false\"}[$__range]))",
+                    "refId": "B",
+                    "legendFormat": "{{access_key_id}}_failed"
+                },
+                {
+                    "expr": "count by (access_key_id) (count by (access_key_id, event_name) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\"}[$__range])))",
+                    "refId": "C",
+                    "legendFormat": "{{access_key_id}}_unique"
+                }
+            ],
+            "title": "Access Key Consumption Summary (Total Usage & Statistics)",
+            "transformations": [
+                {
+                    "id": "groupBy",
+                    "options": {
+                        "fields": {
+                            "Value #A": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "Value #B": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "Value #C": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "access_key_id": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {
+                            "access_key_id": 0,
+                            "Value #A (lastNotNull)": 1,
+                            "Value #B (lastNotNull)": 2,
+                            "Value #C (lastNotNull)": 3
+                        },
+                        "renameByName": {
+                            "access_key_id": "Access Key ID",
+                            "Value #A (lastNotNull)": "Total Actions",
+                            "Value #B (lastNotNull)": "Failed Actions",
+                            "Value #C (lastNotNull)": "Unique Resources"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "success"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "Failed"
+                                            },
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "Success"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 24,
+                "x": 0,
+                "y": 76
+            },
+            "id": 30,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "timestamp"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "Detailed Activity Log (Who Did What, When, and Where)",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true
+                        },
+                        "indexByName": {
+                            "timestamp": 0,
+                            "access_key_id": 1,
+                            "event_name": 2,
+                            "resources": 3,
+                            "principal_id": 4,
+                            "source_ip": 5,
+                            "aws_region": 6,
+                            "success": 7,
+                            "error_code": 8,
+                            "error_message": 9
+                        },
+                        "renameByName": {
+                            "timestamp": "Time",
+                            "access_key_id": "Access Key",
+                            "event_name": "Action",
+                            "resources": "Resource",
+                            "principal_id": "User/Principal",
+                            "source_ip": "Source IP",
+                            "aws_region": "Region",
+                            "success": "Status",
+                            "error_code": "Error Code",
+                            "error_message": "Error Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Count"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 12,
+                "x": 0,
+                "y": 88
+            },
+            "id": 32,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Count"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_name=~\"RunInstances|StartInstances|StopInstances|TerminateInstances|CreateVolume|DeleteVolume\"} | json | line_format \"{{.resources}}|||{{.access_key_id}}|||{{.event_name}}\"",
+                    "refId": "A"
+                }
+            ],
+            "title": "EC2 Resources → Access Keys (EC2 Instance Access Audit)",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "auto",
+                        "source": "Line"
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Count"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 12,
+                "x": 12,
+                "y": 88
+            },
+            "id": 34,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Count"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_name=~\"PutObject|GetObject|DeleteObject|CreateBucket|DeleteBucket\"} | json | line_format \"{{.resources}}|||{{.access_key_id}}|||{{.event_name}}\"",
+                    "refId": "A"
+                }
+            ],
+            "title": "S3 Resources → Access Keys (S3 Bucket Access Audit)",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "auto",
+                        "source": "Line"
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 50
+                            },
+                            {
+                                "color": "orange",
+                                "value": 200
+                            },
+                            {
+                                "color": "red",
+                                "value": 500
+                            }
+                        ]
+                    },
+                    "links": [
+                        {
+                            "title": "View Details for ${__data.fields[0]}",
+                            "url": "/d/cloudtrail-monitoring?var-access_key=${__data.fields[0]}&${__url_time_range}"
+                        }
+                    ]
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Total"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            },
+                            {
+                                "id": "custom.width",
+                                "value": 100
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "EC2"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "S3"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "orange",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "RDS"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "purple",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Lambda"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Failed"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "red",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 24,
+                "x": 0,
+                "y": 98
+            },
+            "id": 36,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Total"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\"}[$__range]))",
+                    "refId": "A",
+                    "legendFormat": "{{access_key_id}}"
+                },
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\", event_source=\"ec2.amazonaws.com\"}[$__range]))",
+                    "refId": "B",
+                    "legendFormat": "{{access_key_id}}_ec2"
+                },
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\", event_source=\"s3.amazonaws.com\"}[$__range]))",
+                    "refId": "C",
+                    "legendFormat": "{{access_key_id}}_s3"
+                },
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\", event_source=\"rds.amazonaws.com\"}[$__range]))",
+                    "refId": "D",
+                    "legendFormat": "{{access_key_id}}_rds"
+                },
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\", event_source=\"lambda.amazonaws.com\"}[$__range]))",
+                    "refId": "E",
+                    "legendFormat": "{{access_key_id}}_lambda"
+                },
+                {
+                    "expr": "sum by (access_key_id) (count_over_time({job=\"cloudtrail\", access_key_id!=\"N/A\", success=\"false\"}[$__range]))",
+                    "refId": "F",
+                    "legendFormat": "{{access_key_id}}_failed"
+                }
+            ],
+            "title": "🔑 Access Keys Overview - اضغط على أي Access Key لرؤية التفاصيل",
+            "description": "Click on any row to filter all panels below and see what this Access Key did on EC2, S3, RDS, Lambda, etc.",
+            "transformations": [
+                {
+                    "id": "groupBy",
+                    "options": {
+                        "fields": {
+                            "Value #A": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "Value #B": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "Value #C": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "Value #D": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "Value #E": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "Value #F": {
+                                "aggregations": [
+                                    "lastNotNull"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "access_key_id": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {
+                            "access_key_id": 0,
+                            "Value #A (lastNotNull)": 1,
+                            "Value #B (lastNotNull)": 2,
+                            "Value #C (lastNotNull)": 3,
+                            "Value #D (lastNotNull)": 4,
+                            "Value #E (lastNotNull)": 5,
+                            "Value #F (lastNotNull)": 6
+                        },
+                        "renameByName": {
+                            "access_key_id": "Access Key (اضغط هنا)",
+                            "Value #A (lastNotNull)": "Total",
+                            "Value #B (lastNotNull)": "EC2",
+                            "Value #C (lastNotNull)": "S3",
+                            "Value #D (lastNotNull)": "RDS",
+                            "Value #E (lastNotNull)": "Lambda",
+                            "Value #F (lastNotNull)": "Failed"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Count"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 0,
+                "y": 108
+            },
+            "id": 38,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Count"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "📦 Resources by Service (الـ Resources حسب النوع - EC2, S3, RDS, إلخ)",
+            "description": "Shows what AWS services the selected Access Key is using",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "groupBy",
+                    "options": {
+                        "fields": {
+                            "Line": {
+                                "aggregations": [
+                                    "count"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "event_source": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {
+                            "event_source": 0,
+                            "Line (count)": 1
+                        },
+                        "renameByName": {
+                            "event_source": "AWS Service",
+                            "Line (count)": "Count"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Count"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 12,
+                "y": 108
+            },
+            "id": 40,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Count"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "⚡ Actions Breakdown (تفصيل العمليات على كل Resource)",
+            "description": "Detailed breakdown of all actions performed by the selected Access Key",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "groupBy",
+                    "options": {
+                        "fields": {
+                            "Line": {
+                                "aggregations": [
+                                    "count"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "event_name": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            },
+                            "event_source": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {
+                            "event_source": 0,
+                            "event_name": 1,
+                            "Line (count)": 2
+                        },
+                        "renameByName": {
+                            "event_source": "Service",
+                            "event_name": "Action",
+                            "Line (count)": "Count"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Status"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "❌ Failed"
+                                            },
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "✅ Success"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 14,
+                "w": 24,
+                "x": 0,
+                "y": 120
+            },
+            "id": 42,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Time"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "📋 Complete Details - مين عمل إيه على أي Resource بالظبط",
+            "description": "Complete log showing WHO did WHAT on WHICH resource (EC2/S3/RDS/etc), WHEN, and WHERE",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true,
+                            "Line": true
+                        },
+                        "indexByName": {
+                            "timestamp": 0,
+                            "access_key_id": 1,
+                            "event_source": 2,
+                            "event_name": 3,
+                            "resources": 4,
+                            "principal_id": 5,
+                            "source_ip": 6,
+                            "aws_region": 7,
+                            "success": 8,
+                            "error_code": 9,
+                            "error_message": 10
+                        },
+                        "renameByName": {
+                            "timestamp": "Time",
+                            "access_key_id": "Access Key",
+                            "event_source": "Service (EC2/S3/RDS/Lambda/etc)",
+                            "event_name": "Action",
+                            "resources": "Resource Details",
+                            "principal_id": "User/Principal",
+                            "source_ip": "Source IP",
+                            "aws_region": "Region",
+                            "success": "Status",
+                            "error_code": "Error Code",
+                            "error_message": "Error Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Status"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "❌ Failed"
+                                            },
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "✅ Success"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Action"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 0,
+                "y": 134
+            },
+            "id": 44,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Time"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_source=\"ec2.amazonaws.com\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "💻 EC2 - اتستخدم امتى ومين عمل إيه",
+            "description": "All EC2 activities: WHEN it was used, WHO used it, and WHAT they did",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true,
+                            "Line": true,
+                            "event_source": true
+                        },
+                        "indexByName": {
+                            "timestamp": 0,
+                            "event_name": 1,
+                            "resources": 2,
+                            "access_key_id": 3,
+                            "principal_id": 4,
+                            "source_ip": 5,
+                            "aws_region": 6,
+                            "success": 7
+                        },
+                        "renameByName": {
+                            "timestamp": "⏰ When (امتى)",
+                            "event_name": "⚡ Action (عمل إيه)",
+                            "resources": "💻 EC2 Instance",
+                            "access_key_id": "🔑 Access Key (مين)",
+                            "principal_id": "👤 User",
+                            "source_ip": "🌐 IP",
+                            "aws_region": "🌍 Region",
+                            "success": "✅ Status"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Status"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "❌ Failed"
+                                            },
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "✅ Success"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Action"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "orange",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 12,
+                "y": 134
+            },
+            "id": 46,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Time"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_source=\"s3.amazonaws.com\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "🪣 S3 - اتستخدم امتى ومين عمل إيه",
+            "description": "All S3 activities: WHEN it was used, WHO used it, and WHAT they did",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true,
+                            "Line": true,
+                            "event_source": true
+                        },
+                        "indexByName": {
+                            "timestamp": 0,
+                            "event_name": 1,
+                            "resources": 2,
+                            "access_key_id": 3,
+                            "principal_id": 4,
+                            "source_ip": 5,
+                            "aws_region": 6,
+                            "success": 7
+                        },
+                        "renameByName": {
+                            "timestamp": "⏰ When (امتى)",
+                            "event_name": "⚡ Action (عمل إيه)",
+                            "resources": "🪣 S3 Bucket",
+                            "access_key_id": "🔑 Access Key (مين)",
+                            "principal_id": "👤 User",
+                            "source_ip": "🌐 IP",
+                            "aws_region": "🌍 Region",
+                            "success": "✅ Status"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Status"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "❌ Failed"
+                                            },
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "✅ Success"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Action"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "purple",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 0,
+                "y": 146
+            },
+            "id": 48,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Time"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_source=\"rds.amazonaws.com\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "🗄️ RDS - اتستخدم امتى ومين عمل إيه",
+            "description": "All RDS activities: WHEN it was used, WHO used it, and WHAT they did",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true,
+                            "Line": true,
+                            "event_source": true
+                        },
+                        "indexByName": {
+                            "timestamp": 0,
+                            "event_name": 1,
+                            "resources": 2,
+                            "access_key_id": 3,
+                            "principal_id": 4,
+                            "source_ip": 5,
+                            "aws_region": 6,
+                            "success": 7
+                        },
+                        "renameByName": {
+                            "timestamp": "⏰ When (امتى)",
+                            "event_name": "⚡ Action (عمل إيه)",
+                            "resources": "🗄️ RDS Database",
+                            "access_key_id": "🔑 Access Key (مين)",
+                            "principal_id": "👤 User",
+                            "source_ip": "🌐 IP",
+                            "aws_region": "🌍 Region",
+                            "success": "✅ Status"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Status"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "❌ Failed"
+                                            },
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "✅ Success"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Action"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 12,
+                "y": 146
+            },
+            "id": 50,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Time"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_source=\"lambda.amazonaws.com\", access_key_id=~\"$access_key\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "⚡ Lambda - اتستخدم امتى ومين عمل إيه",
+            "description": "All Lambda activities: WHEN it was used, WHO used it, and WHAT they did",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true,
+                            "Line": true,
+                            "event_source": true
+                        },
+                        "indexByName": {
+                            "timestamp": 0,
+                            "event_name": 1,
+                            "resources": 2,
+                            "access_key_id": 3,
+                            "principal_id": 4,
+                            "source_ip": 5,
+                            "aws_region": 6,
+                            "success": 7
+                        },
+                        "renameByName": {
+                            "timestamp": "⏰ When (امتى)",
+                            "event_name": "⚡ Action (عمل إيه)",
+                            "resources": "⚡ Lambda Function",
+                            "access_key_id": "🔑 Access Key (مين)",
+                            "principal_id": "👤 User",
+                            "source_ip": "🌐 IP",
+                            "aws_region": "🌍 Region",
+                            "success": "✅ Status"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 10
+                            },
+                            {
+                                "color": "orange",
+                                "value": 50
+                            },
+                            {
+                                "color": "red",
+                                "value": 100
+                            }
+                        ]
+                    },
+                    "links": []
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Total Actions"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            },
+                            {
+                                "id": "custom.width",
+                                "value": 120
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "EC2 Instance"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 200
+                            },
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 24,
+                "x": 0,
+                "y": 158
+            },
+            "id": 52,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Total Actions"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_source=\"ec2.amazonaws.com\"} | json | line_format \"{{.resources}}\"",
+                    "refId": "A"
+                }
+            ],
+            "title": "💻 EC2 Instances Overview - اضغط على Instance لمعرفة مين عمل إيه عليه",
+            "description": "Click on any EC2 instance to see which Access Keys accessed it and what they did",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "auto",
+                        "source": "Line",
+                        "replace": true
+                    }
+                },
+                {
+                    "id": "groupBy",
+                    "options": {
+                        "fields": {
+                            "Line": {
+                                "aggregations": [
+                                    "count"
+                                ],
+                                "operation": "aggregate"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {
+                            "Line": 0,
+                            "Line (count)": 1
+                        },
+                        "renameByName": {
+                            "Line": "💻 EC2 Instance (اضغط هنا)",
+                            "Line (count)": "Total Actions"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": "Loki",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Status"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "false": {
+                                                "color": "red",
+                                                "index": 1,
+                                                "text": "❌ Failed"
+                                            },
+                                            "true": {
+                                                "color": "green",
+                                                "index": 0,
+                                                "text": "✅ Success"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Action"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "pattern": "Run.*",
+                                            "result": {
+                                                "color": "green",
+                                                "index": 0
+                                            }
+                                        },
+                                        "type": "regex"
+                                    },
+                                    {
+                                        "options": {
+                                            "pattern": "Start.*",
+                                            "result": {
+                                                "color": "blue",
+                                                "index": 1
+                                            }
+                                        },
+                                        "type": "regex"
+                                    },
+                                    {
+                                        "options": {
+                                            "pattern": "Stop.*",
+                                            "result": {
+                                                "color": "orange",
+                                                "index": 2
+                                            }
+                                        },
+                                        "type": "regex"
+                                    },
+                                    {
+                                        "options": {
+                                            "pattern": "Terminate.*",
+                                            "result": {
+                                                "color": "red",
+                                                "index": 3
+                                            }
+                                        },
+                                        "type": "regex"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Count"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "gradient-gauge"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 24,
+                "x": 0,
+                "y": 168
+            },
+            "id": 54,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "Count"
+                    }
+                ]
+            },
+            "pluginVersion": "8.0.0",
+            "targets": [
+                {
+                    "expr": "{job=\"cloudtrail\", event_source=\"ec2.amazonaws.com\"} | json",
+                    "refId": "A"
+                }
+            ],
+            "title": "🔍 EC2 Instance Details - مين (Access Key) عمل إيه على الـ Instance",
+            "description": "Shows which Access Keys accessed this EC2 instance and what actions they performed",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "format": "json",
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "groupBy",
+                    "options": {
+                        "fields": {
+                            "Line": {
+                                "aggregations": [
+                                    "count"
+                                ],
+                                "operation": "aggregate"
+                            },
+                            "resources": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            },
+                            "access_key_id": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            },
+                            "event_name": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            },
+                            "success": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {
+                            "resources": 0,
+                            "access_key_id": 1,
+                            "event_name": 2,
+                            "Line (count)": 3,
+                            "success": 4
+                        },
+                        "renameByName": {
+                            "resources": "💻 EC2 Instance",
+                            "access_key_id": "🔑 Access Key (مين)",
+                            "event_name": "⚡ Action (عمل إيه)",
+                            "Line (count)": "Count",
+                            "success": "✅ Status"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        }
+    ],
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "style": "dark",
+    "tags": [
+        "cloudtrail",
+        "aws",
+        "security"
+    ],
+    "templating": {
+        "list": [
+            {
+                "allValue": null,
+                "current": {
+                    "selected": false,
+                    "text": "All",
+                    "value": "$__all"
+                },
+                "datasource": "Loki",
+                "definition": "label_values({job=\"cloudtrail\"}, access_key_id)",
+                "description": null,
+                "error": null,
+                "hide": 0,
+                "includeAll": true,
+                "label": "Access Key",
+                "multi": true,
+                "name": "access_key",
+                "options": [],
+                "query": "label_values({job=\"cloudtrail\"}, access_key_id)",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            },
+            {
+                "allValue": null,
+                "current": {
+                    "selected": false,
+                    "text": "All",
+                    "value": "$__all"
+                },
+                "datasource": "Loki",
+                "definition": "label_values({job=\"cloudtrail\"}, event_name)",
+                "description": null,
+                "error": null,
+                "hide": 0,
+                "includeAll": true,
+                "label": "Event Name",
+                "multi": true,
+                "name": "event_name",
+                "options": [],
+                "query": "label_values({job=\"cloudtrail\"}, event_name)",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            },
+            {
+                "allValue": null,
+                "current": {
+                    "selected": false,
+                    "text": "All",
+                    "value": "$__all"
+                },
+                "datasource": "Loki",
+                "definition": "label_values({job=\"cloudtrail\"}, aws_region)",
+                "description": null,
+                "error": null,
+                "hide": 0,
+                "includeAll": true,
+                "label": "AWS Region",
+                "multi": true,
+                "name": "aws_region",
+                "options": [],
+                "query": "label_values({job=\"cloudtrail\"}, aws_region)",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-6h",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "AWS CloudTrail Monitoring",
+    "uid": "cloudtrail-monitoring",
+    "version": 1
+}
