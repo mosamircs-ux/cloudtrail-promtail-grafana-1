@@ -1,0 +1,18 @@
+# Grafana Alert Contact Points - Email notifications
+# REQUIRED: Configure SMTP in grafana.ini first (see ALERTING-SETUP.md)
+#
+# Get your Loki datasource UID: Grafana → Connections → Data sources → Loki → copy UID
+
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: email-alerts
+    receivers:
+      - uid: email-alerts-uid
+        type: email
+        disableResolveMessage: false
+        settings:
+          addresses: "mohammed.sameer@mhg-int.com"   # <<< REPLACE with your email
+          singleEmail: true
+          subject: "[Grafana Alert] {{ .GroupLabels.alertname }}"

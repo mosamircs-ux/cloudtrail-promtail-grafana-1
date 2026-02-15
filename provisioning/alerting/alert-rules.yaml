@@ -1,0 +1,117 @@
+# Grafana Alert Rules - EC2 Status & Application Errors
+#
+# STEP 1: Get your Loki datasource UID
+#   Grafana → Connections → Data sources → Click "Loki" → Copy the UID from URL or Settings
+#
+# STEP 2: Replace LOKI_DATASOURCE_UID below with your UID (e.g. "loki" or "P1E6F4C4z")
+#
+# STEP 3: Mount this folder in Grafana Docker:
+#   -v $(pwd)/provisioning:/etc/grafana/provisioning
+
+apiVersion: 1
+
+groups:
+  # EC2 DOWN alert - fires when NO instances have sent logs in 15 min
+  - orgId: 1
+    name: ec2_status
+    folder: EC2 and Apps
+    interval: 1m
+    rules:
+      - uid: all_ec2_down
+        title: All EC2 Instances Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: LOKI_DATASOURCE_UID
+            model:
+              expr: count(count by (instance) (count_over_time({job=~".+"}[15m]) > 0))
+              refId: A
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator: { params: [1], type: lt }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { params: [], type: last }
+              expression: A
+              reducer: last
+              type: threshold
+        noDataState: OK
+        execErrState: OK
+        for: 5m
+        annotations:
+          summary: "All EC2 instances are DOWN - no logs in 15 minutes"
+          description: "No logs received from any EC2. Check Promtail and Loki."
+        labels:
+          severity: critical
+
+  # Application errors - fires when errors detected in logs
+  - orgId: 1
+    name: app_errors
+    folder: EC2 and Apps
+    interval: 1m
+    rules:
+      - uid: app_errors_detected
+        title: Application Errors Detected
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: LOKI_DATASOURCE_UID
+            model:
+              expr: sum(count_over_time({job=~".+"} |~ "(?i)(error|exception|fail|fatal|panic)"[5m]))
+              refId: A
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator: { params: [0], type: gt }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { params: [], type: last }
+              expression: A
+              reducer: last
+              type: threshold
+        noDataState: OK
+        execErrState: OK
+        for: 1m
+        annotations:
+          summary: "{{ $value }} errors detected in application logs"
+          description: "Errors found in last 5 minutes. Check the Main dashboard for details."
+        labels:
+          severity: warning
+
+      - uid: high_error_rate
+        title: High Error Rate (50+ errors in 5 min)
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: LOKI_DATASOURCE_UID
+            model:
+              expr: sum(count_over_time({job=~".+"} |~ "(?i)(error|exception|fail|fatal)"[5m]))
+              refId: A
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator: { params: [50], type: gt }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { params: [], type: last }
+              expression: A
+              reducer: last
+              type: threshold
+        noDataState: OK
+        execErrState: OK
+        for: 2m
+        annotations:
+          summary: "CRITICAL: {{ $value }} errors in 5 minutes"
+          description: "High error rate detected. Immediate attention required."
+        labels:
+          severity: critical

@@ -1,0 +1,11 @@
+# Notification routing - send all alerts to email
+apiVersion: 1
+
+policies:
+  - orgId: 1
+    receiver: email-alerts
+    group_by: ['alertname', 'instance', 'job']
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h
+    routes: []   # All alerts go to email-alerts
