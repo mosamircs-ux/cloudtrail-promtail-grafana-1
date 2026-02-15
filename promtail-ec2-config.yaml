@@ -1,0 +1,56 @@
+# Promtail config for EC2 - Deploy on EACH EC2 to send logs to Loki
+# Replace INSTANCE_ID with your EC2 hostname (e.g. ip-172-31-10-39) or a friendly name
+#
+# Deploy: sed -i "s/INSTANCE_ID/$(hostname)/" promtail-ec2-config.yaml
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://16.24.169.121:3100/loki/api/v1/push
+    # Change to your Loki server IP
+
+scrape_configs:
+  # Ubuntu/Debian: use syslog. Amazon Linux: comment out and use messages below
+  - job_name: syslog
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: syslog
+          instance: INSTANCE_ID
+          __path__: /var/log/syslog
+    pipeline_stages: []
+
+  # Amazon Linux/RHEL: use messages. Ubuntu: comment this out (uses syslog above)
+  - job_name: messages
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: messages
+          instance: INSTANCE_ID
+          __path__: /var/log/messages
+    pipeline_stages: []
+
+  # Application logs - uncomment and set path for your apps
+  # - job_name: app
+  #   static_configs:
+  #     - targets: [localhost]
+  #       labels:
+  #         job: app
+  #         instance: INSTANCE_ID
+  #       __path__: /var/log/your-app/*.log
+  #   pipeline_stages: []
+
+  # Nginx - uncomment if installed
+  # - job_name: nginx
+  #   static_configs:
+  #     - targets: [localhost]
+  #       labels: { job: nginx, instance: INSTANCE_ID }
+  #       __path__: /var/log/nginx/*.log
+  #   pipeline_stages: []

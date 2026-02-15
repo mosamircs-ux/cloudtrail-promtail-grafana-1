@@ -1,0 +1,369 @@
+{
+    "annotations": {
+        "list": []
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "id": null,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "loki",
+                "uid": "${datasource}"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null}
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0},
+            "id": 1,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "count(sum by (instance) (count_over_time({job=~\".+\"}[15m])))",
+                "refId": "A"
+            }],
+            "title": "EC2 / Instances Total",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 4, "y": 0},
+            "id": 2,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "count(sum by (instance) (count_over_time({job=~\".+\"}[15m])) > 0)",
+                "refId": "A"
+            }],
+            "title": "EC2 Up (last 15 min)",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null},
+                            {"color": "red", "value": 1}
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 8, "y": 0},
+            "id": 3,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "sum(count_over_time({job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical)\" [$__range]))",
+                "refId": "A"
+            }],
+            "title": "Total Errors (selected time)",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 12, "y": 0},
+            "id": 4,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "count(count by (job) (count_over_time({job=~\".+\"}[$__range])))",
+                "refId": "A"
+            }],
+            "title": "Applications / Jobs",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "EC2 instances that sent logs in the last 15 minutes are UP. No logs = DOWN.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "custom": {
+                        "align": "auto",
+                        "cellOptions": {"type": "auto"},
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Logs (15m)"},
+                        "properties": [
+                            {
+                                "id": "thresholds",
+                                "value": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {"color": "red", "value": null},
+                                        {"color": "red", "value": 0},
+                                        {"color": "green", "value": 1}
+                                    ]
+                                }
+                            },
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 150}}
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 4},
+            "id": 5,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Logs (15m)"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[15m]))",
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A"
+            }],
+            "title": "EC2 Status - Which Instances Are UP / DOWN",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true},
+                        "indexByName": {"instance": 0, "job": 1, "Value": 2},
+                        "renameByName": {
+                            "instance": "Instance / Host",
+                            "job": "Application",
+                            "Value": "Logs (15m)"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All error-level logs from every EC2 and application in one place.",
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 14},
+            "id": 6,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "All Errors - Every EC2 & Application",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error count per instance. Identify which EC2 has the most problems.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 26},
+            "id": 7,
+            "options": {
+                "displayLabels": ["name", "percent"],
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "topk(15, sum by (instance) (count_over_time({job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal)\" [$__range])))",
+                "legendFormat": "{{instance}}",
+                "refId": "A"
+            }],
+            "title": "Errors by Instance (Which EC2 Has Most Errors)",
+            "type": "piechart"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error count per application/job.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 26},
+            "id": 8,
+            "options": {
+                "displayLabels": ["name", "percent"],
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "topk(15, sum by (job) (count_over_time({job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal)\" [$__range])))",
+                "legendFormat": "{{job}}",
+                "refId": "A"
+            }],
+            "title": "Errors by Application",
+            "type": "piechart"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Log volume over time per instance. Gaps = possible downtime.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 2,
+                        "pointSize": 5,
+                        "showPoints": "never"
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 34},
+            "id": 9,
+            "options": {
+                "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["mean", "max"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[$__interval]))",
+                "legendFormat": "{{instance}}",
+                "refId": "A"
+            }],
+            "title": "Log Volume Over Time by Instance",
+            "type": "timeseries"
+        }
+    ],
+    "refresh": "30s",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": ["main", "ec2", "monitoring", "errors"],
+    "templating": {
+        "list": [
+            {
+                "current": {},
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "definition": "label_values({job=~\".+\"}, instance)",
+                "hide": 0,
+                "includeAll": true,
+                "label": "Instance",
+                "multi": true,
+                "name": "instance",
+                "options": [],
+                "query": "label_values({job=~\".+\"}, instance)",
+                "refresh": 1,
+                "skipUrlSync": false,
+                "sort": 1,
+                "type": "query"
+            },
+            {
+                "current": {},
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "hide": 0,
+                "includeAll": false,
+                "label": "Datasource",
+                "multi": false,
+                "name": "datasource",
+                "options": [],
+                "query": "loki",
+                "queryValue": "",
+                "refresh": 1,
+                "skipUrlSync": false,
+                "type": "datasource"
+            }
+        ]
+    },
+    "time": {"from": "now-6h", "to": "now"},
+    "timezone": "browser",
+    "title": "Main - EC2 & Application Status",
+    "uid": "main-ec2-status",
+    "version": 1,
+    "weekStart": ""
+}

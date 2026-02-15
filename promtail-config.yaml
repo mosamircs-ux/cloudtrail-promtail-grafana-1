@@ -16,6 +16,7 @@ scrape_configs:
           - localhost
         labels:
           job: cloudtrail
+          instance: cloudtrail-processor
           __path__: /var/log/cloudtrail-processed/*.log
     
     pipeline_stages:
