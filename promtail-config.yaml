@@ -27,6 +27,7 @@ scrape_configs:
             event_source: event_source
             user_type: user_type
             principal_id: principal_id
+            iam_username: iam_username
             arn: arn
             access_key_id: access_key_id
             source_ip: source_ip
@@ -58,4 +59,4 @@ scrape_configs:
       # Template for log line
       - template:
           source: output
-          template: '{{ .event_name }} by {{ .principal_id }} ({{ .access_key_id }}) from {{ .source_ip }} - Success: {{ .success }}'
+          template: '{{ .event_name }} by {{ .iam_username }} ({{ .access_key_id }}) from {{ .source_ip }} - Success: {{ .success }}'

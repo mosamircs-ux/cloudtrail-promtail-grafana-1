@@ -78,6 +78,7 @@ scrape_configs:
             aws_region: aws_region
             resources: resources
             principal_id: principal_id
+            iam_username: iam_username
             source_ip: source_ip
             error_code: error_code
             error_message: error_message

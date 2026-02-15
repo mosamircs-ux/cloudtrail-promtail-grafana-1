@@ -677,7 +677,7 @@
                             "resources": 3,
                             "aws_region": 4,
                             "source_ip": 5,
-                            "principal_id": 6,
+                            "iam_username": 6,
                             "success": 7,
                             "error_code": 8,
                             "error_message": 9
@@ -689,7 +689,7 @@
                             "resources": "Resources",
                             "aws_region": "Region",
                             "source_ip": "Source IP",
-                            "principal_id": "User",
+                            "iam_username": "User",
                             "success": "Status",
                             "error_code": "Error Code",
                             "error_message": "Error Message"
@@ -1220,7 +1220,7 @@
                             "access_key_id": 1,
                             "event_name": 2,
                             "resources": 3,
-                            "principal_id": 4,
+                            "iam_username": 4,
                             "source_ip": 5,
                             "aws_region": 6,
                             "success": 7,
@@ -1232,7 +1232,7 @@
                             "access_key_id": "Access Key",
                             "event_name": "Action",
                             "resources": "Resource",
-                            "principal_id": "User/Principal",
+                            "iam_username": "User/Principal",
                             "source_ip": "Source IP",
                             "aws_region": "Region",
                             "success": "Status",
@@ -1972,7 +1972,7 @@
                             "event_source": 2,
                             "event_name": 3,
                             "resources": 4,
-                            "principal_id": 5,
+                            "iam_username": 5,
                             "source_ip": 6,
                             "aws_region": 7,
                             "success": 8,
@@ -1985,7 +1985,7 @@
                             "event_source": "Service (EC2/S3/RDS/Lambda/etc)",
                             "event_name": "Action",
                             "resources": "Resource Details",
-                            "principal_id": "User/Principal",
+                            "iam_username": "User/Principal",
                             "source_ip": "Source IP",
                             "aws_region": "Region",
                             "success": "Status",
@@ -2118,7 +2118,7 @@
                             "event_name": 1,
                             "resources": 2,
                             "access_key_id": 3,
-                            "principal_id": 4,
+                            "iam_username": 4,
                             "source_ip": 5,
                             "aws_region": 6,
                             "success": 7
@@ -2128,7 +2128,7 @@
                             "event_name": "⚡ Action (عمل إيه)",
                             "resources": "💻 EC2 Instance",
                             "access_key_id": "🔑 Access Key (مين)",
-                            "principal_id": "👤 User",
+                            "iam_username": "👤 User",
                             "source_ip": "🌐 IP",
                             "aws_region": "🌍 Region",
                             "success": "✅ Status"
@@ -2259,7 +2259,7 @@
                             "event_name": 1,
                             "resources": 2,
                             "access_key_id": 3,
-                            "principal_id": 4,
+                            "iam_username": 4,
                             "source_ip": 5,
                             "aws_region": 6,
                             "success": 7
@@ -2269,7 +2269,7 @@
                             "event_name": "⚡ Action (عمل إيه)",
                             "resources": "🪣 S3 Bucket",
                             "access_key_id": "🔑 Access Key (مين)",
-                            "principal_id": "👤 User",
+                            "iam_username": "👤 User",
                             "source_ip": "🌐 IP",
                             "aws_region": "🌍 Region",
                             "success": "✅ Status"
@@ -2400,7 +2400,7 @@
                             "event_name": 1,
                             "resources": 2,
                             "access_key_id": 3,
-                            "principal_id": 4,
+                            "iam_username": 4,
                             "source_ip": 5,
                             "aws_region": 6,
                             "success": 7
@@ -2410,7 +2410,7 @@
                             "event_name": "⚡ Action (عمل إيه)",
                             "resources": "🗄️ RDS Database",
                             "access_key_id": "🔑 Access Key (مين)",
-                            "principal_id": "👤 User",
+                            "iam_username": "👤 User",
                             "source_ip": "🌐 IP",
                             "aws_region": "🌍 Region",
                             "success": "✅ Status"
@@ -2541,7 +2541,7 @@
                             "event_name": 1,
                             "resources": 2,
                             "access_key_id": 3,
-                            "principal_id": 4,
+                            "iam_username": 4,
                             "source_ip": 5,
                             "aws_region": 6,
                             "success": 7
@@ -2551,7 +2551,7 @@
                             "event_name": "⚡ Action (عمل إيه)",
                             "resources": "⚡ Lambda Function",
                             "access_key_id": "🔑 Access Key (مين)",
-                            "principal_id": "👤 User",
+                            "iam_username": "👤 User",
                             "source_ip": "🌐 IP",
                             "aws_region": "🌍 Region",
                             "success": "✅ Status"
@@ -2876,6 +2876,10 @@
                                 "aggregations": [],
                                 "operation": "groupby"
                             },
+                            "iam_username": {
+                                "aggregations": [],
+                                "operation": "groupby"
+                            },
                             "event_name": {
                                 "aggregations": [],
                                 "operation": "groupby"
@@ -2894,13 +2898,15 @@
                         "indexByName": {
                             "resources": 0,
                             "access_key_id": 1,
-                            "event_name": 2,
-                            "Line (count)": 3,
-                            "success": 4
+                            "iam_username": 2,
+                            "event_name": 3,
+                            "Line (count)": 4,
+                            "success": 5
                         },
                         "renameByName": {
                             "resources": "💻 EC2 Instance",
-                            "access_key_id": "🔑 Access Key (مين)",
+                            "access_key_id": "🔑 Access Key",
+                            "iam_username": "👤 User",
                             "event_name": "⚡ Action (عمل إيه)",
                             "Line (count)": "Count",
                             "success": "✅ Status"

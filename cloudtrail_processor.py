@@ -127,6 +127,50 @@ class CloudTrailProcessor:
             logger.error(f"Error processing {s3_key}: {e}")
             return []
     
+    def _extract_iam_username(self, user_identity):
+        """
+        Extract IAM username from user identity for display purposes.
+        Returns human-readable username (e.g. 'john.doe') instead of principal ID (e.g. 'AIDAR2CXKSGHHQEKL6O4C').
+        """
+        # CloudTrail provides userName for IAM users
+        user_name = user_identity.get('userName', '')
+        if user_name:
+            return user_name
+
+        user_type = user_identity.get('type', 'Unknown')
+        arn = user_identity.get('arn', '')
+
+        # IAM User: extract from ARN (arn:aws:iam::123456789012:user/john.doe)
+        if user_type == 'IAMUser' and '/' in arn:
+            return arn.split('/')[-1]
+
+        # AssumedRole: extract role name (arn:aws:sts::...:assumed-role/RoleName/session-name)
+        if user_type == 'AssumedRole' and 'assumed-role/' in arn:
+            parts = arn.split('assumed-role/')[-1].split('/')
+            if len(parts) >= 2:
+                return f"{parts[0]}/{parts[1]}"  # role/session
+            return parts[0] if parts else 'Unknown'
+
+        # FederatedUser: extract from ARN
+        if user_type == 'FederatedUser' and '/' in arn:
+            return arn.split('/')[-1]
+
+        # Root
+        if user_type == 'Root':
+            return 'root'
+
+        # AWSService: extract service name
+        if user_type == 'AWSService':
+            invoked_by = user_identity.get('invokedBy', 'unknown')
+            return invoked_by.split('.')[0] if '.' in invoked_by else invoked_by
+
+        # principalId format "AIDAXXX:username" - username after colon (when present)
+        principal_id = user_identity.get('principalId', '')
+        if principal_id and ':' in principal_id:
+            return principal_id.split(':', 1)[-1]
+
+        return principal_id if principal_id else 'Unknown'
+
     def extract_access_key_identifier(self, user_identity):
         """
         Extract meaningful access key identifier from user identity
@@ -490,6 +534,7 @@ class CloudTrailProcessor:
         user_type = user_identity.get('type', 'Unknown')
         principal_id = user_identity.get('principalId', 'Unknown')
         arn = user_identity.get('arn', 'Unknown')
+        iam_username = self._extract_iam_username(user_identity)
         
         # Get enhanced access key identifier
         access_key_id = self.extract_access_key_identifier(user_identity)
@@ -552,6 +597,7 @@ class CloudTrailProcessor:
             'event_source': event_source,
             'user_type': user_type,
             'principal_id': principal_id,
+            'iam_username': iam_username,
             'arn': arn,
             'access_key_id': access_key_id,
             'source_ip': source_ip,
