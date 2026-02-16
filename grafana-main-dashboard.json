@@ -278,7 +278,7 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\" | json",
+                "expr": "{job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
                 "refId": "A"
             }],
             "title": "Errors Table - Organized View",
@@ -293,38 +293,55 @@
                         "excludeByName": {
                             "id": true,
                             "labels": true,
-                            "tsNs": true,
-                            "request_parameters": true,
-                            "response_elements": true,
-                            "user_agent": true
+                            "tsNs": true
                         },
                         "indexByName": {
+                            "Time": 0,
                             "timestamp": 0,
                             "event_name": 1,
                             "event_source": 2,
                             "user_type": 3,
                             "iam_username": 4,
-                            "access_key_id": 5,
-                            "source_ip": 6,
-                            "aws_region": 7,
-                            "error_code": 8,
-                            "error_message": 9,
-                            "resources": 10,
-                            "success": 11
+                            "principal_id": 5,
+                            "arn": 6,
+                            "access_key_id": 7,
+                            "source_ip": 8,
+                            "user_agent": 9,
+                            "aws_region": 10,
+                            "error_code": 11,
+                            "error_message": 12,
+                            "resources": 13,
+                            "request_parameters": 14,
+                            "response_elements": 15,
+                            "success": 16,
+                            "Line": 17,
+                            "level": 18,
+                            "msg": 19,
+                            "message": 19
                         },
                         "renameByName": {
+                            "Time": "Time",
                             "timestamp": "Time",
                             "event_name": "Event",
                             "event_source": "Service",
                             "user_type": "User Type",
                             "iam_username": "IAM User",
+                            "principal_id": "Principal ID",
+                            "arn": "ARN",
                             "access_key_id": "Access Key",
                             "source_ip": "Source IP",
+                            "user_agent": "User Agent",
                             "aws_region": "Region",
                             "error_code": "Error Code",
                             "error_message": "Error Message",
                             "resources": "Resources",
-                            "success": "Status"
+                            "request_parameters": "Request Params",
+                            "response_elements": "Response",
+                            "success": "Status",
+                            "Line": "Raw Log / Message",
+                            "level": "Level",
+                            "msg": "Message",
+                            "message": "Message"
                         }
                     }
                 }
