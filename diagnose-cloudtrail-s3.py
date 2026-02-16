@@ -49,13 +49,37 @@ def main():
 
     # List and sample files
     print("Listing log files...")
+    try:
+        s3.head_bucket(Bucket=bucket)
+    except ClientError as e:
+        err = e.response.get('Error', {}).get('Code', '')
+        if err == 'InvalidAccessKeyId':
+            print("\nERROR: Invalid AWS Access Key - the key does not exist or was deleted.")
+            print("Fix: 1) Use EC2 IAM role (recommended) 2) Run 'aws configure' with valid keys")
+        elif err == '403':
+            print("\nERROR: Access denied to S3 bucket. Check IAM permissions.")
+        else:
+            print(f"\nERROR: {e}")
+        sys.exit(1)
+
     paginator = s3.get_paginator('list_objects_v2')
     log_files = []
-    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
-        for obj in page.get('Contents', []):
-            key = obj['Key']
-            if key.endswith('.json.gz') and 'Digest' not in key and obj['Size'] > 100:
-                log_files.append({'key': key, 'size': obj['Size'], 'modified': obj['LastModified']})
+    try:
+        for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+            for obj in page.get('Contents', []):
+                key = obj['Key']
+                if key.endswith('.json.gz') and 'Digest' not in key and obj['Size'] > 100:
+                    log_files.append({'key': key, 'size': obj['Size'], 'modified': obj['LastModified']})
+    except ClientError as e:
+        err = e.response.get('Error', {}).get('Code', '')
+        if err == 'InvalidAccessKeyId':
+            print("\nERROR: Invalid AWS Access Key - the key does not exist or was deleted.")
+            print("Fix: 1) Use EC2 IAM role (recommended) 2) Run 'aws configure' with valid keys")
+        elif err == '403':
+            print("\nERROR: Access denied. Check IAM permissions for s3:ListBucket.")
+        else:
+            print(f"\nERROR: {e}")
+        sys.exit(1)
 
     print(f"Found {len(log_files)} log files\n")
 
