@@ -712,6 +712,93 @@
                 }
             ],
             "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All logs from all instances. Filter by Instance above to see logs from specific EC2s.",
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 81},
+            "id": 15,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\".+\", instance=~\"$instance\"}",
+                "refId": "A"
+            }],
+            "title": "Logs by Instance (filter above)",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Structured table view of all logs - shows Instance, Job, Level, and Message. Use Instance filter above.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "level"},
+                        "properties": [{
+                            "id": "mappings",
+                            "value": [
+                                {
+                                    "options": {
+                                        "ERROR": {"color": "red", "index": 0, "text": "ERROR"},
+                                        "CRITICAL": {"color": "red", "index": 1, "text": "CRITICAL"},
+                                        "WARNING": {"color": "orange", "index": 2, "text": "WARNING"},
+                                        "INFO": {"color": "blue", "index": 3, "text": "INFO"},
+                                        "DEBUG": {"color": "gray", "index": 4, "text": "DEBUG"}
+                                    },
+                                    "type": "value"
+                                }
+                            ]
+                        }]
+                    }
+                ]
+            },
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 95},
+            "id": 16,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\".+\", instance=~\"$instance\"}",
+                "refId": "A"
+            }],
+            "title": "All Logs Table - By Instance",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true},
+                        "indexByName": {"Time": 0, "labels": 1, "instance": 2, "job": 3, "level": 4, "Line": 5},
+                        "renameByName": {"Time": "Time", "labels": "Labels", "instance": "Instance", "job": "Job/App", "level": "Level", "Line": "Message"}
+                    }
+                }
+            ],
+            "type": "table"
         }
     ],
     "refresh": "30s",

@@ -1,0 +1,62 @@
+# 1. Clone
+git clone <your-repo-url> cloudtrail-promtail-grafana-1
+cd cloudtrail-promtail-grafana-1
+
+# 2. Create directories
+sudo mkdir -p /opt/cloudtrail-processor
+sudo mkdir -p /var/log/cloudtrail-processed
+sudo mkdir -p /etc/promtail
+sudo mkdir -p /var/lib/promtail
+sudo chown -R $(whoami):$(whoami) /opt/cloudtrail-processor /var/log/cloudtrail-processed /var/lib/promtail /etc/promtail
+
+# 3. Copy files
+sudo cp cloudtrail_processor.py config.yaml requirements.txt /opt/cloudtrail-processor/
+sudo cp promtail-config.yaml /etc/promtail/promtail-config.yaml
+
+# 4. Edit config (set your S3 bucket, region, Loki IP)
+nano /opt/cloudtrail-processor/config.yaml
+
+# 5. Edit Promtail config (set Loki IP)
+nano /etc/promtail/promtail-config.yaml
+
+# 6. Create Python venv and install deps
+cd /opt/cloudtrail-processor
+python3 -m venv venv
+./venv/bin/pip install --upgrade pip
+./venv/bin/pip install -r requirements.txt
+
+# 7. Install Promtail binary
+cd /tmp
+curl -sL -O "https://github.com/grafana/loki/releases/download/v2.9.3/promtail-linux-amd64.zip"
+unzip -q promtail-linux-amd64.zip
+sudo mv promtail-linux-amd64 /usr/local/bin/promtail
+sudo chmod +x /usr/local/bin/promtail
+
+# 8. Install services (Ubuntu)
+cd ~/cloudtrail-promtail-grafana-1
+sudo cp cloudtrail-processor.service /etc/systemd/system/
+sudo cp promtail.service /etc/systemd/system/
+
+# For Amazon Linux, replace ubuntu with ec2-user:
+# sudo sed 's/User=ubuntu/User=ec2-user/g; s/Group=ubuntu/Group=ec2-user/g' cloudtrail-processor.service | sudo tee /etc/systemd/system/cloudtrail-processor.service
+# sudo sed 's/User=ubuntu/User=ec2-user/g; s/Group=ubuntu/Group=ec2-user/g' promtail.service | sudo tee /etc/systemd/system/promtail.service
+
+# 9. Start services
+sudo systemctl daemon-reload
+sudo systemctl enable cloudtrail-processor promtail
+sudo systemctl start cloudtrail-processor promtail
+
+# 10. Verify
+sudo systemctl status cloudtrail-processor
+sudo systemctl status promtail
+ls /var/log/cloudtrail-processed/
+
+chmod +x setup-laravel-promtail.sh
+./setup-laravel-promtail.sh
+
+sudo apt install unzip curl -y
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws configure
+
