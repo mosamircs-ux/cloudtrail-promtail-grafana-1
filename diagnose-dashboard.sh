@@ -35,26 +35,26 @@ echo ""
 
 # 3. Check Log Files
 echo "3️⃣ Checking Log Files..."
-LOG_DIR="/var/log/cloudtrail"
+LOG_DIR="/var/log/cloudtrail-processed"
 if [ -d "$LOG_DIR" ]; then
-    LOG_COUNT=$(ls -1 $LOG_DIR/*.json 2>/dev/null | wc -l)
+    LOG_COUNT=$(ls -1 $LOG_DIR/*.log 2>/dev/null | wc -l)
     if [ $LOG_COUNT -gt 0 ]; then
         echo -e "${GREEN}✅ Found $LOG_COUNT log file(s)${NC}"
         echo "   Latest file:"
-        ls -lht $LOG_DIR/*.json | head -1
+        ls -lht $LOG_DIR/*.log 2>/dev/null | head -1
     else
-        echo -e "${RED}❌ No log files found in $LOG_DIR${NC}"
-        echo "   Check CloudTrail Processor logs: sudo journalctl -u cloudtrail-processor -n 50"
+        echo -e "${YELLOW}⚠️  No log files yet (processor creates them when it runs)${NC}"
+        echo "   Start processor: sudo systemctl start cloudtrail-processor"
     fi
 else
     echo -e "${RED}❌ Log directory $LOG_DIR does not exist${NC}"
-    echo "   Create it: sudo mkdir -p $LOG_DIR"
+    echo "   Create it: sudo mkdir -p $LOG_DIR && sudo chown ubuntu:ubuntu $LOG_DIR"
 fi
 echo ""
 
 # 4. Check Latest Logs
 echo "4️⃣ Checking Latest Log Entries..."
-LATEST_LOG=$(ls -t $LOG_DIR/*.json 2>/dev/null | head -1)
+LATEST_LOG=$(ls -t $LOG_DIR/*.log 2>/dev/null | head -1)
 if [ -n "$LATEST_LOG" ]; then
     echo "   Latest log file: $LATEST_LOG"
     LAST_ENTRY=$(tail -1 "$LATEST_LOG")
@@ -72,7 +72,7 @@ echo ""
 
 # 5. Check Promtail Config
 echo "5️⃣ Checking Promtail Configuration..."
-PROMTAIL_CONFIG="/etc/promtail/promtail-cloudtrail-config.yml"
+PROMTAIL_CONFIG="/etc/promtail/promtail-config.yaml"
 if [ -f "$PROMTAIL_CONFIG" ]; then
     echo -e "${GREEN}✅ Promtail config exists${NC}"
     echo "   Checking for required labels..."
@@ -121,7 +121,7 @@ echo ""
 
 # 8. Check Disk Space
 echo "8️⃣ Checking Disk Space..."
-DISK_USAGE=$(df -h $LOG_DIR 2>/dev/null | tail -1 | awk '{print $5}' | sed 's/%//')
+DISK_USAGE=$(df -h /var/log 2>/dev/null | tail -1 | awk '{print $5}' | sed 's/%//')
 if [ -n "$DISK_USAGE" ]; then
     if [ $DISK_USAGE -lt 80 ]; then
         echo -e "${GREEN}✅ Disk space OK ($DISK_USAGE% used)${NC}"
@@ -150,7 +150,8 @@ if ! systemctl is-active --quiet promtail; then
     ((ISSUES++))
 fi
 
-if [ ! -d "$LOG_DIR" ] || [ $(ls -1 $LOG_DIR/*.json 2>/dev/null | wc -l) -eq 0 ]; then
+# Only count log files as issue if processor is running but no logs
+if systemctl is-active --quiet cloudtrail-processor 2>/dev/null && { [ ! -d "$LOG_DIR" ] || [ $(ls -1 $LOG_DIR/*.log 2>/dev/null | wc -l) -eq 0 ]; }; then
     ((ISSUES++))
 fi
 
