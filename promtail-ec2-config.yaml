@@ -54,3 +54,20 @@ scrape_configs:
   #       labels: { job: nginx, instance: INSTANCE_ID }
   #       __path__: /var/log/nginx/*.log
   #   pipeline_stages: []
+
+  # Laravel logs - change path if your app is elsewhere (e.g. /home/ubuntu/app/storage/logs)
+  - job_name: laravel
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: laravel
+          instance: INSTANCE_ID
+          __path__: /var/www/html/storage/logs/*.log
+    pipeline_stages:
+      # Parse [2024-02-16 08:30:45] env.LEVEL: message (adds level, env labels for filtering)
+      - regex:
+          expression: '^\[(?P<timestamp>[^\]]+)\]\s+(?P<env>\w+)\.(?P<level>\w+):\s+(?P<message>.*)'
+      - labels:
+          level:
+          env:

@@ -500,6 +500,63 @@
             }],
             "title": "Log Volume Over Time by Instance",
             "type": "timeseries"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Laravel application logs. Deploy Promtail with job=laravel on the EC2 where Laravel runs.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [{
+                            "id": "mappings",
+                            "value": [
+                                {"options": {"ERROR": {"color": "red"}, "from": "ERROR", "to": "ERROR", "type": "value"}, "result": {"color": "red", "text": "ERROR"}},
+                                {"options": {"CRITICAL": {"color": "red"}, "from": "CRITICAL", "to": "CRITICAL", "type": "value"}, "result": {"color": "red", "text": "CRITICAL"}},
+                                {"options": {"WARNING": {"color": "orange"}, "from": "WARNING", "to": "WARNING", "type": "value"}, "result": {"color": "orange", "text": "WARNING"}},
+                                {"options": {"INFO": {"color": "blue"}, "from": "INFO", "to": "INFO", "type": "value"}, "result": {"color": "blue", "text": "INFO"}},
+                                {"options": {"DEBUG": {"color": "gray"}, "from": "DEBUG", "to": "DEBUG", "type": "value"}, "result": {"color": "gray", "text": "DEBUG"}}
+                            ]
+                        }]
+                    }
+                ]
+            },
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 64},
+            "id": 12,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": false, "reducer": ["sum"], "show": false},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"laravel\"}",
+                "refId": "A"
+            }],
+            "title": "Laravel Logs",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "regex", "source": "Line", "pattern": "^\\[(?P<timestamp>[^\\]]+)\\]\\s+(?P<env>\\w+)\\.(?P<level>\\w+):\\s+(?P<message>.*)$"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "labels": true, "tsNs": true},
+                        "indexByName": {"Time": 0, "timestamp": 0, "level": 1, "env": 2, "message": 3, "Line": 4},
+                        "renameByName": {"Time": "Time", "timestamp": "Time", "level": "Level", "env": "Env", "message": "Message", "Line": "Raw"}
+                    }
+                }
+            ],
+            "type": "table"
         }
     ],
     "refresh": "30s",
