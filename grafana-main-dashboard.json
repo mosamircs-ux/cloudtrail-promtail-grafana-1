@@ -282,6 +282,7 @@
                 "refId": "A"
             }],
             "title": "Errors Table - Organized View",
+            "description": "All logs matching error keywords. Error Code/Message are empty for successful events—use the panel below for actual API failures.",
             "transformations": [
                 {
                     "id": "extractFields",
@@ -350,6 +351,69 @@
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Only CloudTrail events where the API call actually failed. Error Code and Error Message are populated here.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 38},
+            "id": 11,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": false, "reducer": ["sum"], "show": false},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"cloudtrail\"} | json | success=\"false\"",
+                "refId": "A"
+            }],
+            "title": "CloudTrail Failures Only – Error Messages Populated",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "json", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "labels": true, "tsNs": true, "request_parameters": true, "response_elements": true},
+                        "indexByName": {
+                            "timestamp": 0,
+                            "event_name": 1,
+                            "event_source": 2,
+                            "iam_username": 3,
+                            "error_code": 4,
+                            "error_message": 5,
+                            "source_ip": 6,
+                            "aws_region": 7,
+                            "resources": 8
+                        },
+                        "renameByName": {
+                            "timestamp": "Time",
+                            "event_name": "Event",
+                            "event_source": "Service",
+                            "iam_username": "IAM User",
+                            "error_code": "Error Code",
+                            "error_message": "Error Message",
+                            "source_ip": "Source IP",
+                            "aws_region": "Region",
+                            "resources": "Resources"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
             "description": "Error count per instance. Identify which EC2 has the most problems.",
             "fieldConfig": {
                 "defaults": {
@@ -358,7 +422,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 38},
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 48},
             "id": 7,
             "options": {
                 "displayLabels": ["name", "percent"],
@@ -383,7 +447,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 38},
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 48},
             "id": 8,
             "options": {
                 "displayLabels": ["name", "percent"],
@@ -415,7 +479,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 46},
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 56},
             "id": 9,
             "options": {
                 "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["mean", "max"]}
