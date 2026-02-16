@@ -143,7 +143,7 @@
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
-            "description": "EC2 instances that sent logs in the last 15 minutes are UP. No logs = DOWN.",
+            "description": "All EC2 instances seen in the selected time range. Status = UP (green) if logs received in last 5 min, DOWN (red) if no recent logs.",
             "fieldConfig": {
                 "defaults": {
                     "color": {"mode": "thresholds"},
@@ -157,21 +157,42 @@
                 },
                 "overrides": [
                     {
-                        "matcher": {"id": "byName", "options": "Logs (15m)"},
+                        "matcher": {"id": "byName", "options": "Status"},
                         "properties": [
                             {
-                                "id": "thresholds",
-                                "value": {
-                                    "mode": "absolute",
-                                    "steps": [
-                                        {"color": "red", "value": null},
-                                        {"color": "red", "value": 0},
-                                        {"color": "green", "value": 1}
-                                    ]
-                                }
+                                "id": "custom.displayMode",
+                                "value": "color-background-solid"
                             },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {"options": {"0": {"color": "red", "index": 0, "text": "DOWN"}}, "type": "value"},
+                                    {"options": {"pattern": "^[1-9].*", "result": {"color": "green", "text": "UP"}}, "type": "regex"}
+                                ]
+                            },
+                            {"id": "custom.width", "value": 100}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Total Logs"},
+                        "properties": [
                             {"id": "custom.displayMode", "value": "gradient-gauge"},
-                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 150}}
+                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 150}},
+                            {
+                                "id": "thresholds",
+                                "value": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Recent Logs (5m)"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 120}},
+                            {
+                                "id": "thresholds",
+                                "value": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}
+                            }
                         ]
                     }
                 ]
@@ -180,19 +201,30 @@
             "id": 5,
             "options": {
                 "cellHeight": "sm",
-                "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false},
+                "footer": {"countRows": true, "fields": "", "reducer": ["sum"], "show": true},
                 "showHeader": true,
-                "sortBy": [{"desc": true, "displayName": "Logs (15m)"}]
+                "sortBy": [{"desc": false, "displayName": "Status"}]
             },
             "pluginVersion": "10.0.0",
-            "targets": [{
-                "datasource": {"type": "loki", "uid": "${datasource}"},
-                "editorMode": "code",
-                "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[15m]))",
-                "legendFormat": "__auto",
-                "range": true,
-                "refId": "A"
-            }],
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[$__range]))",
+                    "legendFormat": "{{instance}} {{job}}",
+                    "range": true,
+                    "refId": "total"
+                },
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[5m]))",
+                    "legendFormat": "{{instance}} {{job}}",
+                    "range": true,
+                    "refId": "recent",
+                    "hide": false
+                }
+            ],
             "title": "EC2 Status - Which Instances Are UP / DOWN",
             "transformations": [
                 {
@@ -203,11 +235,12 @@
                     "id": "organize",
                     "options": {
                         "excludeByName": {"Time": true},
-                        "indexByName": {"instance": 0, "job": 1, "Value": 2},
+                        "indexByName": {"instance": 0, "job": 1, "Value #recent": 2, "Value #total": 3},
                         "renameByName": {
                             "instance": "Instance / Host",
                             "job": "Application",
-                            "Value": "Logs (15m)"
+                            "Value #recent": "Status",
+                            "Value #total": "Total Logs"
                         }
                     }
                 }
@@ -216,8 +249,130 @@
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Instances that stopped sending logs. These may be crashed, stopped, or have Promtail issues.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "fixed", "fixedColor": "red"},
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Status"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {"id": "color", "value": {"mode": "fixed", "fixedColor": "red"}},
+                            {"id": "custom.width", "value": 100}
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 5, "w": 12, "x": 0, "y": 14},
+            "id": 13,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "(sum by (instance) (count_over_time({job=~\".+\"}[$__range]))) unless (sum by (instance) (count_over_time({job=~\".+\"}[5m])))",
+                    "legendFormat": "{{instance}}",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "EC2 DOWN - No Logs in Last 5 Minutes",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true, "Value": true},
+                        "indexByName": {"instance": 0},
+                        "renameByName": {"instance": "Instance / Host"}
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {"alias": "Status", "mode": "reduceRow", "reduce": {"include": [], "reducer": "count"}}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Status": true},
+                        "renameByName": {}
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Instances actively sending logs right now.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "fixed", "fixedColor": "green"},
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Logs (5m)"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 120}},
+                            {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}}
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 5, "w": 12, "x": 12, "y": 14},
+            "id": 14,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Logs (5m)"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "sum by (instance) (count_over_time({job=~\".+\"}[5m]))",
+                "legendFormat": "{{instance}}",
+                "range": true,
+                "refId": "A"
+            }],
+            "title": "EC2 UP - Active Now",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true},
+                        "indexByName": {"instance": 0, "Value": 1},
+                        "renameByName": {"instance": "Instance / Host", "Value": "Logs (5m)"}
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
             "description": "All error-level logs from every EC2 and application in one place.",
-            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 14},
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 19},
             "id": 6,
             "options": {
                 "dedupStrategy": "none",
@@ -266,7 +421,7 @@
                     }
                 ]
             },
-            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 26},
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 31},
             "id": 10,
             "options": {
                 "cellHeight": "sm",
@@ -364,7 +519,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 38},
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 43},
             "id": 11,
             "options": {
                 "cellHeight": "sm",
@@ -430,7 +585,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 48},
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 53},
             "id": 7,
             "options": {
                 "displayLabels": ["name", "percent"],
@@ -455,7 +610,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 48},
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 53},
             "id": 8,
             "options": {
                 "displayLabels": ["name", "percent"],
@@ -487,7 +642,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 56},
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 61},
             "id": 9,
             "options": {
                 "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["mean", "max"]}
@@ -526,7 +681,7 @@
                     }
                 ]
             },
-            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 64},
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 69},
             "id": 12,
             "options": {
                 "cellHeight": "sm",
