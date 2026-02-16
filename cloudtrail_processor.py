@@ -598,12 +598,26 @@ class CloudTrailProcessor:
         # Request parameters
         request_params = event.get('requestParameters', {})
         
-        # Response elements
+        # Response elements (needed for error fallback and resources)
         response_elements = event.get('responseElements', {})
         
-        # Error information
-        error_code = event.get('errorCode', '')
-        error_message = event.get('errorMessage', '')
+        # Error information - AWS uses camelCase (errorCode, errorMessage) at top level
+        error_code = (
+            event.get('errorCode') or
+            event.get('error_code') or
+            ''
+        )
+        error_message = (
+            event.get('errorMessage') or
+            event.get('error_message') or
+            ''
+        )
+        # Fallback: some events put error details in responseElements (e.g. Error.Code, Error.Message)
+        if not error_code and isinstance(response_elements, dict):
+            err = response_elements.get('Error') or response_elements.get('error')
+            if isinstance(err, dict):
+                error_code = error_code or err.get('Code') or err.get('code') or ''
+                error_message = error_message or err.get('Message') or err.get('message') or ''
         
         # Source IP
         source_ip = event.get('sourceIPAddress', 'Unknown')
