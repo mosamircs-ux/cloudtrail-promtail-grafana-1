@@ -7,7 +7,8 @@ Type=simple
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=/opt/cloudtrail-processor
-ExecStart=/opt/cloudtrail-processor/venv/bin/python /opt/cloudtrail-processor/cloudtrail_processor.py
+# Use venv python if it exists, otherwise system python3 (for Amazon Linux / missing venv)
+ExecStart=/bin/sh -c 'if [ -x /opt/cloudtrail-processor/venv/bin/python ]; then exec /opt/cloudtrail-processor/venv/bin/python /opt/cloudtrail-processor/cloudtrail_processor.py; else exec /usr/bin/python3 /opt/cloudtrail-processor/cloudtrail_processor.py; fi'
 Restart=always
 RestartSec=10
 StandardOutput=journal
