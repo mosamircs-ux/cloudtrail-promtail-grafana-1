@@ -27,6 +27,11 @@ fi
 
 CONFIG="${CONFIG_PATH:-/opt/cloudtrail-processor/config.yaml}"
 STATE="${STATE_PATH:-/var/lib/promtail/cloudtrail-state.json}"
+STATE_DIR=$(dirname "$STATE")
+
+# Create state directory if needed
+sudo mkdir -p "$STATE_DIR"
+echo -e "${GREEN}Ensured state directory exists${NC}"
 
 # Backup state
 if [ -f "$STATE" ]; then
