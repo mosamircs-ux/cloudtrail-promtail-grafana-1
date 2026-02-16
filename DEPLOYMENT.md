@@ -286,6 +286,19 @@ labels:
 
 ---
 
+## Full CloudTrail History (All Users, Keys, Resources)
+
+If you only see your own IAM user and access key:
+
+```bash
+./backfill-cloudtrail.sh          # Reprocess last 90 days from S3
+python3 diagnose-cloudtrail-s3.py # Verify what's in the raw S3 data
+```
+
+See **CLOUDTRAIL-DATA-SCOPE.md** for full details.
+
+---
+
 ## Troubleshooting
 
 | Problem | Solution |
@@ -293,4 +306,5 @@ labels:
 | No logs in `/var/log/cloudtrail-processed/` | Check AWS credentials, S3 bucket, IAM permissions. `journalctl -u cloudtrail-processor -f` |
 | Promtail not sending to Loki | Check Loki URL in promtail-config.yaml, ensure Loki is running and reachable |
 | No iam_username in dashboard | Ensure updated `cloudtrail_processor.py` is deployed and restarted. Old logs won't have it. |
+| Only see my user/access key, not all | Run `./backfill-cloudtrail.sh` and check CloudTrail trail config. See CLOUDTRAIL-DATA-SCOPE.md |
 | Permission denied | `sudo chown -R ubuntu:ubuntu /opt/cloudtrail-processor /var/log/cloudtrail-processed` |

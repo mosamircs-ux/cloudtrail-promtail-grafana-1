@@ -11,6 +11,7 @@ loki:
 # Processing Configuration
 run_mode: loop  # 'once' for cron, 'loop' for systemd service
 interval_seconds: 300  # Check for new logs every 5 minutes (if run_mode is 'loop')
+initial_lookback_days: 7  # On first run, process logs from this many days back (use 30+ for full history)
 
 # Output Configuration
 output_dir: /var/log/cloudtrail-processed  # Where to write processed logs

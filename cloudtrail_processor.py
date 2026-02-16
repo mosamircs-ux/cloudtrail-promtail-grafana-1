@@ -58,8 +58,10 @@ class CloudTrailProcessor:
         if state['last_processed_time']:
             start_time = datetime.fromisoformat(state['last_processed_time']).replace(tzinfo=None)
         else:
-            # First run - get logs from last 24 hours
-            start_time = datetime.utcnow() - timedelta(hours=24)
+            # First run - get logs from configurable lookback (default 7 days for full account history)
+            lookback_days = self.config.get('initial_lookback_days', 7)
+            start_time = datetime.utcnow() - timedelta(days=lookback_days)
+            logger.info(f"First run: processing logs from last {lookback_days} days to capture ALL users/keys/resources")
         
         logger.info(f"Looking for logs since {start_time}")
         
