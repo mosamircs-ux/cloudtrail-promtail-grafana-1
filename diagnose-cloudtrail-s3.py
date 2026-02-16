@@ -96,32 +96,53 @@ def main():
     resources = defaultdict(int)
     total_events = 0
 
-    sample_size = min(20, len(log_files))
-    files_to_check = log_files[:sample_size]
+    # Sample from both CloudTrail and CloudTrail-Aggregated (different formats)
+    cloudtrail_std = [f for f in log_files if '/CloudTrail/' in f['key'] and 'CloudTrail-Aggregated' not in f['key']]
+    cloudtrail_agg = [f for f in log_files if 'CloudTrail-Aggregated' in f['key']]
+    files_to_check = (cloudtrail_std[:10] if cloudtrail_std else []) + (cloudtrail_agg[:10] if cloudtrail_agg else [])
+    if not files_to_check:
+        files_to_check = log_files[:20]
+    sample_size = len(files_to_check)
 
-    print(f"Analyzing {sample_size} files (sample)...\n")
+    print(f"Analyzing {sample_size} files ({len(cloudtrail_std[:10])} standard, {len(cloudtrail_agg[:10])} aggregated)...\n")
 
     for fi in files_to_check:
         try:
             resp = s3.get_object(Bucket=bucket, Key=fi['key'])
             with gzip.GzipFile(fileobj=resp['Body']) as f:
                 data = json.load(f)
-            records = data.get('Records', [])
+
+            # Handle both formats: {"Records": [...]} and [...]
+            if isinstance(data, list):
+                records = data
+            elif isinstance(data, dict):
+                records = data.get('Records', [])
+            else:
+                continue
+            if not isinstance(records, list):
+                continue
+
             total_events += len(records)
 
-            for rec in records:
-                ui = rec.get('userIdentity', {})
+            def process_event(rec):
+                """Process a single event record (dict)."""
+                if not isinstance(rec, dict):
+                    return
+                ui = rec.get('userIdentity') or {}
+                if not isinstance(ui, dict):
+                    ui = {}
                 user_type = ui.get('type', 'Unknown')
-                user_name = ui.get('userName', '') or (ui.get('arn', '').split('/')[-1] if '/' in ui.get('arn', '') else '')
-                princ = ui.get('principalId', '')
-                ak = ui.get('accessKeyId', '')
+                arn_val = ui.get('arn', '') or ''
+                user_name = ui.get('userName', '') or (arn_val.split('/')[-1] if isinstance(arn_val, str) and '/' in arn_val else '')
+                princ = ui.get('principalId', '') or ''
+                ak = ui.get('accessKeyId', '') or ''
 
                 if user_name:
                     users[user_name] += 1
                 elif princ:
-                    users[princ] += 1
+                    users[str(princ)[:50]] += 1
                 else:
-                    users[f"{user_type}:{princ[:20]}"] += 1
+                    users[f"{user_type}:{str(princ)[:20]}"] += 1
 
                 if ak:
                     access_keys[ak] += 1
@@ -129,15 +150,49 @@ def main():
                 event_sources[rec.get('eventSource', 'Unknown')] += 1
                 event_names[rec.get('eventName', 'Unknown')] += 1
 
-                for r in rec.get('resources', []):
-                    arn = r.get('ARN', '')
+                for r in (rec.get('resources') or []):
+                    if isinstance(r, dict):
+                        arn = r.get('ARN', '') or r.get('arn', '')
+                    elif isinstance(r, str):
+                        arn = r
+                    else:
+                        continue
                     if arn:
-                        resources[arn.split(':')[-1].split('/')[0][:50]] += 1
+                        resources[str(arn).split(':')[-1].split('/')[0][:50]] += 1
+
+            for rec in records:
+                if isinstance(rec, list):
+                    for sub in rec:
+                        process_event(sub) if isinstance(sub, dict) else None
+                elif isinstance(rec, dict):
+                    # CloudTrail-Aggregated may have events/eventList nested
+                    if 'events' in rec and isinstance(rec['events'], list):
+                        for evt in rec['events']:
+                            process_event(evt) if isinstance(evt, dict) else None
+                    elif 'eventList' in rec and isinstance(rec['eventList'], list):
+                        for evt in rec['eventList']:
+                            process_event(evt) if isinstance(evt, dict) else None
+                    else:
+                        process_event(rec)
 
         except Exception as e:
             print(f"  Error reading {fi['key']}: {e}")
 
-    print("--- Results ---\n")
+    # If all aggregated and 0 events, show sample structure
+    if total_events == 0 and cloudtrail_agg:
+        print("\n  Could not parse aggregated format. Sample structure from first file:")
+        try:
+            resp = s3.get_object(Bucket=bucket, Key=cloudtrail_agg[0]['key'])
+            with gzip.GzipFile(fileobj=resp['Body']) as f:
+                sample = json.load(f)
+            print(f"  Top-level keys: {list(sample.keys()) if isinstance(sample, dict) else 'list'}")
+            if isinstance(sample, dict) and 'Records' in sample and sample['Records']:
+                r0 = sample['Records'][0]
+                print(f"  First record keys: {list(r0.keys()) if isinstance(r0, dict) else type(r0)}")
+        except Exception as e:
+            print(f"  (Could not sample: {e})")
+
+    print("\n--- Results ---\n")
     print(f"Total events in sample: {total_events}")
     print(f"Unique users/identities: {len(users)}")
     print(f"Unique access keys: {len(access_keys)}\n")

@@ -108,23 +108,45 @@ class CloudTrailProcessor:
             logger.error(f"Error listing S3 objects: {e}")
             return []
     
+    def _flatten_records(self, data):
+        """Extract and flatten CloudTrail records from various formats (standard + CloudTrail-Aggregated)."""
+        if isinstance(data, list):
+            records = data
+        elif isinstance(data, dict):
+            records = data.get('Records', [])
+        else:
+            return []
+
+        flattened = []
+        for rec in records:
+            if isinstance(rec, dict):
+                if 'events' in rec and isinstance(rec['events'], list):
+                    flattened.extend(evt for evt in rec['events'] if isinstance(evt, dict))
+                elif 'eventList' in rec and isinstance(rec['eventList'], list):
+                    flattened.extend(evt for evt in rec['eventList'] if isinstance(evt, dict))
+                elif 'userIdentity' in rec or 'eventSource' in rec or 'eventName' in rec:
+                    flattened.append(rec)
+            elif isinstance(rec, list):
+                flattened.extend(evt for evt in rec if isinstance(evt, dict))
+        return flattened
+
     def download_and_parse_log(self, s3_key):
         """Download and parse a CloudTrail log file"""
         bucket = self.config['aws']['s3_bucket']
-        
+
         try:
             # Download file
             logger.info(f"Downloading {s3_key}")
             response = self.s3_client.get_object(Bucket=bucket, Key=s3_key)
-            
+
             # Decompress gzip
             with gzip.GzipFile(fileobj=response['Body']) as gzipfile:
                 content = gzipfile.read()
-            
-            # Parse JSON
+
+            # Parse JSON - handle both standard and CloudTrail-Aggregated formats
             data = json.loads(content)
-            return data.get('Records', [])
-            
+            return self._flatten_records(data)
+
         except Exception as e:
             logger.error(f"Error processing {s3_key}: {e}")
             return []
