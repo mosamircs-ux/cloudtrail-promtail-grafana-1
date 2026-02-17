@@ -799,6 +799,263 @@
                 }
             ],
             "type": "table"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 109},
+            "id": 100,
+            "panels": [],
+            "title": "📁 Logs Per Project / Application",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Select a project/app from the dropdown above to see its logs. Each Laravel app, syslog, cloudtrail etc. is a separate 'job'.",
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 110},
+            "id": 17,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\"$app\", instance=~\"$instance\"}",
+                "refId": "A"
+            }],
+            "title": "Logs by Project/App (use filters above)",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Detailed table view of logs per project. Filter by App/Project and Instance using dropdowns above.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [
+                            {"id": "custom.width", "value": 80},
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {"options": {"ERROR": {"color": "red", "index": 0, "text": "ERROR"}}, "type": "value"},
+                                    {"options": {"CRITICAL": {"color": "red", "index": 1, "text": "CRITICAL"}}, "type": "value"},
+                                    {"options": {"WARNING": {"color": "orange", "index": 2, "text": "WARNING"}}, "type": "value"},
+                                    {"options": {"INFO": {"color": "blue", "index": 3, "text": "INFO"}}, "type": "value"},
+                                    {"options": {"DEBUG": {"color": "gray", "index": 4, "text": "DEBUG"}}, "type": "value"},
+                                    {"options": {"error": {"color": "red", "index": 5, "text": "ERROR"}}, "type": "value"},
+                                    {"options": {"warn": {"color": "orange", "index": 6, "text": "WARN"}}, "type": "value"},
+                                    {"options": {"info": {"color": "blue", "index": 7, "text": "INFO"}}, "type": "value"}
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Project"},
+                        "properties": [
+                            {"id": "custom.width", "value": 150},
+                            {"id": "custom.displayMode", "value": "color-text"}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance"},
+                        "properties": [{"id": "custom.width", "value": 150}]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Message"},
+                        "properties": [{"id": "custom.width", "value": 600}]
+                    }
+                ]
+            },
+            "gridPos": {"h": 16, "w": 24, "x": 0, "y": 124},
+            "id": 18,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\"$app\", instance=~\"$instance\"}",
+                "refId": "A"
+            }],
+            "title": "Project Logs Table - Detailed View",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "job": 1, "instance": 2, "level": 3, "Line": 4, "message": 5, "env": 6},
+                        "renameByName": {
+                            "Time": "Time",
+                            "job": "Project",
+                            "instance": "Instance",
+                            "level": "Level",
+                            "Line": "Raw Log",
+                            "message": "Message",
+                            "env": "Environment"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Shows log count per project/app over time. Useful to see which apps are most active.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {
+                        "drawStyle": "bars",
+                        "fillOpacity": 80,
+                        "lineWidth": 1,
+                        "stacking": {"mode": "normal", "group": "A"}
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 140},
+            "id": 19,
+            "options": {
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["sum"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "sum by (job) (count_over_time({job=~\"$app\", instance=~\"$instance\"}[$__interval]))",
+                "legendFormat": "{{job}}",
+                "refId": "A"
+            }],
+            "title": "Log Volume by Project",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error count per project. Quickly identify which app has the most errors.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 140},
+            "id": 20,
+            "options": {
+                "displayLabels": ["name", "value"],
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "sum by (job) (count_over_time({job=~\"$app\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail|fatal|critical)\" [$__range]))",
+                "legendFormat": "{{job}}",
+                "refId": "A"
+            }],
+            "title": "Errors by Project",
+            "type": "piechart"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Summary of each project: instance, log count, and error count.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Errors"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {
+                                "id": "thresholds",
+                                "value": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 10}]}
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Total Logs"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}}
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 148},
+            "id": 21,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Total Logs"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (job, instance) (count_over_time({job=~\"$app\", instance=~\"$instance\"}[$__range]))",
+                    "legendFormat": "{{job}} - {{instance}}",
+                    "range": true,
+                    "refId": "total"
+                },
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (job, instance) (count_over_time({job=~\"$app\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail)\" [$__range]))",
+                    "legendFormat": "{{job}} - {{instance}}",
+                    "range": true,
+                    "refId": "errors",
+                    "hide": false
+                }
+            ],
+            "title": "Project Summary - Logs & Errors per App",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true},
+                        "indexByName": {"job": 0, "instance": 1, "Value #total": 2, "Value #errors": 3},
+                        "renameByName": {
+                            "job": "Project/App",
+                            "instance": "Instance",
+                            "Value #total": "Total Logs",
+                            "Value #errors": "Errors"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
         }
     ],
     "refresh": "30s",
@@ -818,6 +1075,22 @@
                 "name": "instance",
                 "options": [],
                 "query": "label_values({job=~\".+\"}, instance)",
+                "refresh": 1,
+                "skipUrlSync": false,
+                "sort": 1,
+                "type": "query"
+            },
+            {
+                "current": {},
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "definition": "label_values({job=~\".+\"}, job)",
+                "hide": 0,
+                "includeAll": true,
+                "label": "App/Project",
+                "multi": true,
+                "name": "app",
+                "options": [],
+                "query": "label_values({job=~\".+\"}, job)",
                 "refresh": 1,
                 "skipUrlSync": false,
                 "sort": 1,
