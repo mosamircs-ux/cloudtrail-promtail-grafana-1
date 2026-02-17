@@ -9,7 +9,7 @@
 
 set -e
 
-LOKI_URL="http://16.24.169.121:3100/loki/api/v1/push"  # <<< Change to your Loki server IP
+LOKI_URL="http://157.175.59.166/loki/api/v1/push"  # <<< Change to your Loki server IP
 
 echo "=========================================="
 echo "Promtail Install - EC2 to Loki"

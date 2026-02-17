@@ -70,8 +70,8 @@ sed -i "s|__path__: /var/www/html/storage/logs/\*.log|__path__: $LARAVEL_LOG_PAT
 
 # Prompt for Loki URL
 echo ""
-read -p "Enter Loki URL (default: http://16.24.169.121:3100/loki/api/v1/push): " LOKI_URL
-LOKI_URL=${LOKI_URL:-http://16.24.169.121:3100/loki/api/v1/push}
+read -p "Enter Loki URL (default: http://157.175.59.166:3100/loki/api/v1/push): " LOKI_URL
+LOKI_URL=${LOKI_URL:-http://157.175.59.166:3100/loki/api/v1/push}
 sed -i "s|url: .*|url: $LOKI_URL|" /tmp/promtail-config.yaml
 
 sudo cp /tmp/promtail-config.yaml /etc/promtail/promtail-config.yaml

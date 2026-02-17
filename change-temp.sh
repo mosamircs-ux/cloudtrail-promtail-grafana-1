@@ -10,7 +10,7 @@ NEW_LOKI_URL="http://157.175.59.166:3100/loki/api/v1/push"
 # NEW_LOKI_URL="http://grafana.mhg-int.com:3100/loki/api/v1/push"
 
 # Old URL to replace
-OLD_LOKI_URL="http://16.24.169.121:3100/loki/api/v1/push"
+OLD_LOKI_URL="http://157.175.59.166:3100/loki/api/v1/push"
 
 # === UPDATE PROMTAIL CONFIG ===
 PROMTAIL_CONFIG="/etc/promtail/promtail-config.yaml"
