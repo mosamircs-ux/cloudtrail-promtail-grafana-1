@@ -437,7 +437,6 @@
                 "refId": "A"
             }],
             "title": "Errors Table - Organized View",
-            "description": "All logs matching error keywords. Error Code/Message are empty for successful events—use the panel below for actual API failures.",
             "transformations": [
                 {
                     "id": "extractFields",
@@ -1056,6 +1055,42 @@
                 }
             ],
             "type": "table"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 156},
+            "id": 200,
+            "panels": [],
+            "title": "🖥️ Logs Per Instance (Individual EC2 Tables)",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All logs from this instance showing detailed info.",
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 157},
+            "id": 201,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+            },
+            "pluginVersion": "10.0.0",
+            "repeat": "instance",
+            "repeatDirection": "v",
+            "maxPerRow": 1,
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=\"$instance\"}",
+                "refId": "A"
+            }],
+            "title": "📋 Logs - $instance",
+            "type": "logs"
         }
     ],
     "refresh": "30s",
