@@ -1091,6 +1091,156 @@
             }],
             "title": "📋 Logs - $instance",
             "type": "logs"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 169},
+            "id": 400,
+            "panels": [],
+            "title": "🖥️ Instance 172.31.15.105 - Dedicated Logs",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All logs from instance 172.31.15.105 in log viewer format.",
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 170},
+            "id": 401,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=~\".*172.31.15.105.*\"}",
+                "refId": "A"
+            }],
+            "title": "📋 Logs - 172.31.15.105",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Logs from 172.31.15.105 in table format with columns.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [
+                            {"id": "custom.width", "value": 80},
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {"id": "mappings", "value": [
+                                {"options": {"ERROR": {"color": "red", "text": "ERROR"}}, "type": "value"},
+                                {"options": {"error": {"color": "red", "text": "ERROR"}}, "type": "value"},
+                                {"options": {"CRITICAL": {"color": "red", "text": "CRITICAL"}}, "type": "value"},
+                                {"options": {"INFO": {"color": "blue", "text": "INFO"}}, "type": "value"},
+                                {"options": {"info": {"color": "blue", "text": "INFO"}}, "type": "value"},
+                                {"options": {"WARNING": {"color": "orange", "text": "WARNING"}}, "type": "value"},
+                                {"options": {"warn": {"color": "orange", "text": "WARN"}}, "type": "value"}
+                            ]}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "App/Job"},
+                        "properties": [{"id": "custom.width", "value": 120}]
+                    }
+                ]
+            },
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 182},
+            "id": 402,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=~\".*172.31.15.105.*\"}",
+                "refId": "A"
+            }],
+            "title": "📊 Logs Table - 172.31.15.105",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "job": 1, "level": 2, "Line": 3, "message": 4},
+                        "renameByName": {
+                            "Time": "Time",
+                            "job": "App/Job",
+                            "level": "Level",
+                            "Line": "Log Message",
+                            "message": "Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Only ERROR logs from 172.31.15.105",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 196},
+            "id": 403,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=~\".*172.31.15.105.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors Only - 172.31.15.105",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "job": 1, "Line": 2},
+                        "renameByName": {
+                            "Time": "Time",
+                            "job": "App/Job",
+                            "Line": "Error Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
         }
     ],
     "refresh": "30s",
