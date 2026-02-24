@@ -1097,7 +1097,7 @@
             "gridPos": {"h": 1, "w": 24, "x": 0, "y": 169},
             "id": 400,
             "panels": [],
-            "title": "🖥️ Instance 172.31.14.189 (157.241.4.145) - Dedicated Logs",
+            "title": "🖥️ CloudTrail Processor (ip-172-31-14-189) - Dedicated Logs",
             "type": "row"
         },
         {
@@ -1119,10 +1119,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\".*172.31.14.189.*\"}",
+                "expr": "{instance=~\"cloudtrail.*|.*172.31.14.189.*|.*ip-172-31-14-189.*\"}",
                 "refId": "A"
             }],
-            "title": "📋 Logs - 172.31.14.189",
+            "title": "📋 Logs - CloudTrail Processor",
             "type": "logs"
         },
         {
@@ -1169,10 +1169,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\".*172.31.14.189.*\"}",
+                "expr": "{instance=~\"cloudtrail.*|.*172.31.14.189.*|.*ip-172-31-14-189.*\"}",
                 "refId": "A"
             }],
-            "title": "📊 Logs Table - 172.31.14.189",
+            "title": "📊 Logs Table - CloudTrail Processor",
             "transformations": [
                 {
                     "id": "extractFields",
@@ -1218,10 +1218,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\".*172.31.14.189.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "expr": "{instance=~\"cloudtrail.*|.*172.31.14.189.*|.*ip-172-31-14-189.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
                 "refId": "A"
             }],
-            "title": "🔴 Errors Only - 172.31.14.189",
+            "title": "🔴 Errors Only - CloudTrail Processor",
             "transformations": [
                 {
                     "id": "extractFields",
