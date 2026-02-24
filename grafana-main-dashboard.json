@@ -1097,12 +1097,12 @@
             "gridPos": {"h": 1, "w": 24, "x": 0, "y": 169},
             "id": 400,
             "panels": [],
-            "title": "🖥️ Instance 172.31.15.105 - Dedicated Logs",
+            "title": "🖥️ Instance 172.31.14.189 (157.241.4.145) - Dedicated Logs",
             "type": "row"
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
-            "description": "All logs from instance 172.31.15.105 in log viewer format.",
+            "description": "All logs from instance 172.31.14.189 in log viewer format.",
             "gridPos": {"h": 12, "w": 24, "x": 0, "y": 170},
             "id": 401,
             "options": {
@@ -1119,15 +1119,15 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\".*172.31.15.105.*\"}",
+                "expr": "{instance=~\".*172.31.14.189.*\"}",
                 "refId": "A"
             }],
-            "title": "📋 Logs - 172.31.15.105",
+            "title": "📋 Logs - 172.31.14.189",
             "type": "logs"
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
-            "description": "Logs from 172.31.15.105 in table format with columns.",
+            "description": "Logs from 172.31.14.189 in table format with columns.",
             "fieldConfig": {
                 "defaults": {
                     "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
@@ -1169,10 +1169,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\".*172.31.15.105.*\"}",
+                "expr": "{instance=~\".*172.31.14.189.*\"}",
                 "refId": "A"
             }],
-            "title": "📊 Logs Table - 172.31.15.105",
+            "title": "📊 Logs Table - 172.31.14.189",
             "transformations": [
                 {
                     "id": "extractFields",
@@ -1197,7 +1197,7 @@
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
-            "description": "Only ERROR logs from 172.31.15.105",
+            "description": "Only ERROR logs from 172.31.14.189",
             "fieldConfig": {
                 "defaults": {
                     "custom": {"align": "auto", "displayMode": "auto"},
@@ -1218,10 +1218,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\".*172.31.15.105.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "expr": "{instance=~\".*172.31.14.189.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
                 "refId": "A"
             }],
-            "title": "🔴 Errors Only - 172.31.15.105",
+            "title": "🔴 Errors Only - 172.31.14.189",
             "transformations": [
                 {
                     "id": "extractFields",
