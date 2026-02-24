@@ -1097,7 +1097,7 @@
             "gridPos": {"h": 1, "w": 24, "x": 0, "y": 169},
             "id": 400,
             "panels": [],
-            "title": "🖥️ CloudTrail Processor (ip-172-31-14-189) - Dedicated Logs",
+            "title": "🖥️ Instance 10.0.156.209 - Dedicated Logs",
             "type": "row"
         },
         {
@@ -1119,10 +1119,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\"cloudtrail.*|.*172.31.14.189.*|.*ip-172-31-14-189.*\"}",
+                "expr": "{instance=~\".*10.0.156.209.*|.*ip-10-0-156-209.*\"}",
                 "refId": "A"
             }],
-            "title": "📋 Logs - CloudTrail Processor",
+            "title": "📋 Logs - 10.0.156.209",
             "type": "logs"
         },
         {
@@ -1169,10 +1169,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\"cloudtrail.*|.*172.31.14.189.*|.*ip-172-31-14-189.*\"}",
+                "expr": "{instance=~\".*10.0.156.209.*|.*ip-10-0-156-209.*\"}",
                 "refId": "A"
             }],
-            "title": "📊 Logs Table - CloudTrail Processor",
+            "title": "📊 Logs Table - 10.0.156.209",
             "transformations": [
                 {
                     "id": "extractFields",
@@ -1218,10 +1218,10 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=~\"cloudtrail.*|.*172.31.14.189.*|.*ip-172-31-14-189.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "expr": "{instance=~\".*10.0.156.209.*|.*ip-10-0-156-209.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
                 "refId": "A"
             }],
-            "title": "🔴 Errors Only - CloudTrail Processor",
+            "title": "🔴 Errors Only - 10.0.156.209",
             "transformations": [
                 {
                     "id": "extractFields",
