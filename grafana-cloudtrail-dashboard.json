@@ -613,13 +613,38 @@
                                                 "index": 0,
                                                 "text": "✓ Success"
                                             },
-                                            "false": {
-                                                "color": "red",
-                                                "index": 1,
-                                                "text": "✗ Failed"
-                                            }
-                                        },
-                                        "type": "value"
+                            "false": {
+                                "color": "red",
+                                "index": 1,
+                                "text": "✗ Failed"
+                            }
+                        },
+                        "type": "value"
+                    }
+                ]
+            }
+        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Source IP"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "10.0.156.209": {"text": "10.0.156.209 (e-invoice)", "index": 0},
+                                            "172.31.10.39": {"text": "172.31.10.39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "172.31.14.189": {"text": "172.31.14.189 (MHG Trading CJSC)", "index": 2},
+                                            "172.31.25.86": {"text": "172.31.25.86 (Hatch Sanitary)", "index": 3},
+                                            "172.31.44.113": {"text": "172.31.44.113 (cc-evolution)", "index": 4},
+                                            "172.31.8.125": {"text": "172.31.8.125 (maintenance_rem)", "index": 5},
+                                            "172.31.9.167": {"text": "172.31.9.167 (maintenace-request-production)", "index": 6}
+                                        }
                                     }
                                 ]
                             }
@@ -1156,18 +1181,43 @@
                                 "value": [
                                     {
                                         "options": {
-                                            "false": {
-                                                "color": "red",
-                                                "index": 1,
-                                                "text": "Failed"
-                                            },
-                                            "true": {
-                                                "color": "green",
-                                                "index": 0,
-                                                "text": "Success"
-                                            }
-                                        },
-                                        "type": "value"
+                            "false": {
+                                "color": "red",
+                                "index": 1,
+                                "text": "Failed"
+                            },
+                            "true": {
+                                "color": "green",
+                                "index": 0,
+                                "text": "Success"
+                            }
+                        },
+                        "type": "value"
+                    }
+                ]
+            }
+        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Source IP"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "10.0.156.209": {"text": "10.0.156.209 (e-invoice)", "index": 0},
+                                            "172.31.10.39": {"text": "172.31.10.39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "172.31.14.189": {"text": "172.31.14.189 (MHG Trading CJSC)", "index": 2},
+                                            "172.31.25.86": {"text": "172.31.25.86 (Hatch Sanitary)", "index": 3},
+                                            "172.31.44.113": {"text": "172.31.44.113 (cc-evolution)", "index": 4},
+                                            "172.31.8.125": {"text": "172.31.8.125 (maintenance_rem)", "index": 5},
+                                            "172.31.9.167": {"text": "172.31.9.167 (maintenace-request-production)", "index": 6}
+                                        }
                                     }
                                 ]
                             }
@@ -1905,18 +1955,43 @@
                                 "value": [
                                     {
                                         "options": {
-                                            "false": {
-                                                "color": "red",
-                                                "index": 1,
-                                                "text": "❌ Failed"
-                                            },
-                                            "true": {
-                                                "color": "green",
-                                                "index": 0,
-                                                "text": "✅ Success"
-                                            }
-                                        },
-                                        "type": "value"
+                            "false": {
+                                "color": "red",
+                                "index": 1,
+                                "text": "❌ Failed"
+                            },
+                            "true": {
+                                "color": "green",
+                                "index": 0,
+                                "text": "✅ Success"
+                            }
+                        },
+                        "type": "value"
+                    }
+                ]
+            }
+        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Source IP"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "10.0.156.209": {"text": "10.0.156.209 (e-invoice)", "index": 0},
+                                            "172.31.10.39": {"text": "172.31.10.39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "172.31.14.189": {"text": "172.31.14.189 (MHG Trading CJSC)", "index": 2},
+                                            "172.31.25.86": {"text": "172.31.25.86 (Hatch Sanitary)", "index": 3},
+                                            "172.31.44.113": {"text": "172.31.44.113 (cc-evolution)", "index": 4},
+                                            "172.31.8.125": {"text": "172.31.8.125 (maintenance_rem)", "index": 5},
+                                            "172.31.9.167": {"text": "172.31.9.167 (maintenace-request-production)", "index": 6}
+                                        }
                                     }
                                 ]
                             }
@@ -2067,6 +2142,31 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "🌐 IP"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "10.0.156.209": {"text": "10.0.156.209 (e-invoice)", "index": 0},
+                                            "172.31.10.39": {"text": "172.31.10.39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "172.31.14.189": {"text": "172.31.14.189 (MHG Trading CJSC)", "index": 2},
+                                            "172.31.25.86": {"text": "172.31.25.86 (Hatch Sanitary)", "index": 3},
+                                            "172.31.44.113": {"text": "172.31.44.113 (cc-evolution)", "index": 4},
+                                            "172.31.8.125": {"text": "172.31.8.125 (maintenance_rem)", "index": 5},
+                                            "172.31.9.167": {"text": "172.31.9.167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -2206,6 +2306,31 @@
                                     "fixedColor": "orange",
                                     "mode": "fixed"
                                 }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "🌐 IP"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "10.0.156.209": {"text": "10.0.156.209 (e-invoice)", "index": 0},
+                                            "172.31.10.39": {"text": "172.31.10.39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "172.31.14.189": {"text": "172.31.14.189 (MHG Trading CJSC)", "index": 2},
+                                            "172.31.25.86": {"text": "172.31.25.86 (Hatch Sanitary)", "index": 3},
+                                            "172.31.44.113": {"text": "172.31.44.113 (cc-evolution)", "index": 4},
+                                            "172.31.8.125": {"text": "172.31.8.125 (maintenance_rem)", "index": 5},
+                                            "172.31.9.167": {"text": "172.31.9.167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -2349,6 +2474,31 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "🌐 IP"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "10.0.156.209": {"text": "10.0.156.209 (e-invoice)", "index": 0},
+                                            "172.31.10.39": {"text": "172.31.10.39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "172.31.14.189": {"text": "172.31.14.189 (MHG Trading CJSC)", "index": 2},
+                                            "172.31.25.86": {"text": "172.31.25.86 (Hatch Sanitary)", "index": 3},
+                                            "172.31.44.113": {"text": "172.31.44.113 (cc-evolution)", "index": 4},
+                                            "172.31.8.125": {"text": "172.31.8.125 (maintenance_rem)", "index": 5},
+                                            "172.31.9.167": {"text": "172.31.9.167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -2488,6 +2638,31 @@
                                     "fixedColor": "green",
                                     "mode": "fixed"
                                 }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "🌐 IP"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "10.0.156.209": {"text": "10.0.156.209 (e-invoice)", "index": 0},
+                                            "172.31.10.39": {"text": "172.31.10.39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "172.31.14.189": {"text": "172.31.14.189 (MHG Trading CJSC)", "index": 2},
+                                            "172.31.25.86": {"text": "172.31.25.86 (Hatch Sanitary)", "index": 3},
+                                            "172.31.44.113": {"text": "172.31.44.113 (cc-evolution)", "index": 4},
+                                            "172.31.8.125": {"text": "172.31.8.125 (maintenance_rem)", "index": 5},
+                                            "172.31.9.167": {"text": "172.31.9.167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
                             }
                         ]
                     }

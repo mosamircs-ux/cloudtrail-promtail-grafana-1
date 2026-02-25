@@ -194,6 +194,28 @@
                                 "value": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}
                             }
                         ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance / Host"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -265,6 +287,28 @@
                             {"id": "color", "value": {"mode": "fixed", "fixedColor": "red"}},
                             {"id": "custom.width", "value": 100}
                         ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance / Host"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -331,6 +375,28 @@
                             {"id": "custom.displayMode", "value": "gradient-gauge"},
                             {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 120}},
                             {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance / Host"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
                         ]
                     }
                 ]
@@ -764,6 +830,28 @@
                                 }
                             ]
                         }]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -871,7 +959,26 @@
                     },
                     {
                         "matcher": {"id": "byName", "options": "Instance"},
-                        "properties": [{"id": "custom.width", "value": 150}]
+                        "properties": [
+                            {"id": "custom.width", "value": 150},
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     },
                     {
                         "matcher": {"id": "byName", "options": "Message"},
@@ -1002,6 +1109,28 @@
                         "properties": [
                             {"id": "custom.displayMode", "value": "gradient-gauge"},
                             {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6}
+                                        }
+                                    }
+                                ]
+                            }
                         ]
                     }
                 ]
