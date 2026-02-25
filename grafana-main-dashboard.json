@@ -1393,55 +1393,53 @@
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
-            "description": "Strapi logs from ceramic home project on ip-172-31-16-15.",
-            "fieldConfig": {
-                "defaults": {
-                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
-                    "mappings": [],
-                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
-                },
-                "overrides": [
-                    {"matcher": {"id": "byName", "options": "Level"}, "properties": [{"id": "custom.width", "value": 80}, {"id": "custom.displayMode", "value": "color-background-solid"}, {"id": "mappings", "value": [{"options": {"50": {"color": "red", "text": "ERROR"}}, "type": "value"}, {"options": {"40": {"color": "orange", "text": "WARN"}}, "type": "value"}, {"options": {"30": {"color": "blue", "text": "INFO"}}, "type": "value"}, {"options": {"20": {"color": "gray", "text": "DEBUG"}}, "type": "value"}]}]},
-                    {"matcher": {"id": "byName", "options": "msg"}, "properties": [{"id": "custom.width", "value": 500}]}
-                ]
-            },
+            "description": "Strapi logs from ceramic home project on ip-172-31-16-15 - text stream format.",
             "gridPos": {"h": 12, "w": 12, "x": 0, "y": 207},
             "id": 404,
-            "options": {"cellHeight": "sm", "footer": {"countRows": true, "reducer": ["sum"], "show": true}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "Time"}]},
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
             "pluginVersion": "10.0.0",
-            "targets": [{"datasource": {"type": "loki", "uid": "${datasource}"}, "editorMode": "code", "expr": "{job=\"strapi\", instance=\"ip-172-31-16-15\"}", "refId": "A"}],
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-16-15\"}",
+                "refId": "A"
+            }],
             "title": "📋 Strapi Logs - Ceramic Home (ip-172-31-16-15)",
-            "transformations": [
-                {"id": "extractFields", "options": {"format": "json", "source": "Line"}},
-                {"id": "organize", "options": {"excludeByName": {"id": true, "tsNs": true, "labels": true}, "indexByName": {"Time": 0, "level": 1, "time": 2, "msg": 3, "Line": 4}, "renameByName": {"Time": "Time", "level": "Level", "time": "Timestamp", "msg": "Message", "Line": "Raw"}}}
-            ],
-            "type": "table"
+            "type": "logs"
         },
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
-            "description": "Strapi logs from hypnotic project on ip-172-31-26-6.",
-            "fieldConfig": {
-                "defaults": {
-                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
-                    "mappings": [],
-                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
-                },
-                "overrides": [
-                    {"matcher": {"id": "byName", "options": "Level"}, "properties": [{"id": "custom.width", "value": 80}, {"id": "custom.displayMode", "value": "color-background-solid"}, {"id": "mappings", "value": [{"options": {"50": {"color": "red", "text": "ERROR"}}, "type": "value"}, {"options": {"40": {"color": "orange", "text": "WARN"}}, "type": "value"}, {"options": {"30": {"color": "blue", "text": "INFO"}}, "type": "value"}, {"options": {"20": {"color": "gray", "text": "DEBUG"}}, "type": "value"}]}]},
-                    {"matcher": {"id": "byName", "options": "msg"}, "properties": [{"id": "custom.width", "value": 500}]}
-                ]
-            },
+            "description": "Strapi logs from hypnotic project on ip-172-31-26-6 - text stream format.",
             "gridPos": {"h": 12, "w": 12, "x": 12, "y": 207},
             "id": 405,
-            "options": {"cellHeight": "sm", "footer": {"countRows": true, "reducer": ["sum"], "show": true}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "Time"}]},
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
             "pluginVersion": "10.0.0",
-            "targets": [{"datasource": {"type": "loki", "uid": "${datasource}"}, "editorMode": "code", "expr": "{job=\"strapi\", instance=\"ip-172-31-26-6\"}", "refId": "A"}],
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-26-6\"}",
+                "refId": "A"
+            }],
             "title": "📋 Strapi Logs - Hypnotic (ip-172-31-26-6)",
-            "transformations": [
-                {"id": "extractFields", "options": {"format": "json", "source": "Line"}},
-                {"id": "organize", "options": {"excludeByName": {"id": true, "tsNs": true, "labels": true}, "indexByName": {"Time": 0, "level": 1, "time": 2, "msg": 3, "Line": 4}, "renameByName": {"Time": "Time", "level": "Level", "time": "Timestamp", "msg": "Message", "Line": "Raw"}}}
-            ],
-            "type": "table"
+            "type": "logs"
         }
     ],
     "refresh": "30s",
