@@ -54,6 +54,10 @@ ls /var/log/cloudtrail-processed/
 chmod +x setup-laravel-promtail.sh
 ./setup-laravel-promtail.sh
 
+# Strapi (PM2) on EC2:
+# chmod +x setup-strapi-promtail.sh
+# ./setup-strapi-promtail.sh
+
 sudo apt install unzip curl -y
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
