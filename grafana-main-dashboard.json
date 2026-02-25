@@ -1209,16 +1209,16 @@
                 "wrapLogMessage": false
             },
             "pluginVersion": "10.0.0",
-            "repeat": "instance",
+            "repeat": "instance_named",
             "repeatDirection": "v",
             "maxPerRow": 1,
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{instance=\"$instance\"}",
+                "expr": "{instance=\"${instance_named}\"}",
                 "refId": "A"
             }],
-            "title": "📋 Logs - $instance",
+            "title": "📋 Logs - $instance_named",
             "type": "logs"
         },
         {
@@ -1393,6 +1393,32 @@
                 "skipUrlSync": false,
                 "sort": 1,
                 "type": "query"
+            },
+            {
+                "current": {
+                    "selected": true,
+                    "text": ["All"],
+                    "value": ["$__all"]
+                },
+                "hide": 0,
+                "includeAll": true,
+                "label": "Instance (Named)",
+                "multi": true,
+                "name": "instance_named",
+                "options": [
+                    {"selected": true, "text": "All", "value": "$__all"},
+                    {"selected": false, "text": "ip-10-0-156-209 (e-invoice)", "value": "ip-10-0-156-209"},
+                    {"selected": false, "text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "value": "ip-172-31-10-39"},
+                    {"selected": false, "text": "ip-172-31-14-189 (MHG Trading CJSC)", "value": "ip-172-31-14-189"},
+                    {"selected": false, "text": "ip-172-31-25-86 (Hatch Sanitary)", "value": "ip-172-31-25-86"},
+                    {"selected": false, "text": "ip-172-31-44-113 (cc-evolution)", "value": "ip-172-31-44-113"},
+                    {"selected": false, "text": "ip-172-31-8-125 (maintenance_rem)", "value": "ip-172-31-8-125"},
+                    {"selected": false, "text": "ip-172-31-9-167 (maintenace-request-production)", "value": "ip-172-31-9-167"}
+                ],
+                "query": "ip-10-0-156-209 (e-invoice) : ip-10-0-156-209,ip-172-31-10-39 (promtail_cloudtrail_s3) : ip-172-31-10-39,ip-172-31-14-189 (MHG Trading CJSC) : ip-172-31-14-189,ip-172-31-25-86 (Hatch Sanitary) : ip-172-31-25-86,ip-172-31-44-113 (cc-evolution) : ip-172-31-44-113,ip-172-31-8-125 (maintenance_rem) : ip-172-31-8-125,ip-172-31-9-167 (maintenace-request-production) : ip-172-31-9-167",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "custom"
             },
             {
                 "current": {},
