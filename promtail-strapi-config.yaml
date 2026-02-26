@@ -48,15 +48,14 @@ scrape_configs:
       - labels:
           level:
 
-  # Strapi / PM2 error logs (stderr - plain text or JSON) - explicit scrape for Grafana errors table
-  - job_name: strapi
+  # Strapi / PM2 error logs (stderr) - unique job_name required by Promtail, labels still job:strapi for Loki
+  - job_name: strapi-errors
     static_configs:
       - targets:
           - localhost
         labels:
           job: strapi
           instance: INSTANCE_ID
-          log_source: error
         __path__: STRAPI_ERROR_PATH
     pipeline_stages:
       - json:

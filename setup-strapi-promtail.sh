@@ -56,17 +56,14 @@ fi
 
 STRAPI_LOG_PATH="$PM2_LOG_PATH/$APP_PATTERN"
 
-# Explicit error log path - ensures PM2 -error.log reaches Grafana
+# Explicit error log path (glob) - ensures PM2 -error.log reaches Grafana
+# Use glob so Promtail starts even when error file doesn't exist yet (PM2 creates on first stderr)
 if [ -n "$APP_NAME" ]; then
-    STRAPI_ERROR_PATH="$PM2_LOG_PATH/${APP_NAME}-error.log"
+    STRAPI_ERROR_PATH="$PM2_LOG_PATH/${APP_NAME}*error*.log"
 else
     STRAPI_ERROR_PATH="$PM2_LOG_PATH/*-error.log"
 fi
 echo "   Error logs path: $STRAPI_ERROR_PATH"
-# Warn if error log doesn't exist yet (PM2 creates it when first error occurs)
-if [ -n "$APP_NAME" ] && [ ! -f "$STRAPI_ERROR_PATH" ]; then
-    echo "   ⚠ Error file not yet created (PM2 creates it on first stderr output)"
-fi
 
 # 3. Ensure Promtail is installed
 echo ""
@@ -161,7 +158,11 @@ if sudo systemctl is-active --quiet promtail; then
     echo "   ✓ Promtail is running"
 else
     echo "   ✗ Promtail failed to start"
-    sudo systemctl status promtail --no-pager -l | head -20
+    echo ""
+    echo "   Promtail error output:"
+    /usr/local/bin/promtail -config.file=/etc/promtail/promtail-config.yaml 2>&1 | head -30
+    echo ""
+    sudo systemctl status promtail --no-pager -l | head -15
     exit 1
 fi
 
