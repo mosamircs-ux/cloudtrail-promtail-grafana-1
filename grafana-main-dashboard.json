@@ -1410,7 +1410,7 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{job=\"strapi\", instance=\"ip-172-31-16-15\"}",
+                "expr": "{job=~\"strapi.*\", instance=\"ip-172-31-16-15\"}",
                 "refId": "A"
             }],
             "title": "📋 Strapi Logs - Ceramic Home (ip-172-31-16-15)",
@@ -1435,7 +1435,7 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{job=\"strapi\", instance=\"ip-172-31-26-6\"}",
+                "expr": "{job=~\"strapi.*\", instance=\"ip-172-31-26-6\"}",
                 "refId": "A"
             }],
             "title": "📋 Strapi Logs - Hypnotic (ip-172-31-26-6)",
@@ -1464,16 +1464,17 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{job=\"strapi\", instance=\"ip-172-31-16-15\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "expr": "{job=~\"strapi.*\", instance=\"ip-172-31-16-15\"} |~ \"(?i)(error|exception|fatal|critical)\"",
                 "refId": "A"
             }],
             "title": "🔴 Errors Only - Ceramic Home (ip-172-31-16-15)",
             "transformations": [
+                {"id": "merge", "options": {}},
                 {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
                 {"id": "organize", "options": {
-                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
-                    "indexByName": {"Time": 0, "job": 1, "Line": 2},
-                    "renameByName": {"Time": "Time", "job": "App/Job", "Line": "Error Message"}
+                    "excludeByName": {"id": true, "tsNs": true},
+                    "indexByName": {"Time": 0, "Line": 1, "labels": 2, "job": 3, "instance": 4},
+                    "renameByName": {"Time": "Time", "Line": "Error Message", "labels": "Labels", "job": "App/Job", "instance": "Instance"}
                 }}
             ],
             "type": "table"
@@ -1501,16 +1502,17 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{job=\"strapi\", instance=\"ip-172-31-26-6\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "expr": "{job=~\"strapi.*\", instance=\"ip-172-31-26-6\"} |~ \"(?i)(error|exception|fatal|critical)\"",
                 "refId": "A"
             }],
             "title": "🔴 Errors Only - Hypnotic (ip-172-31-26-6)",
             "transformations": [
+                {"id": "merge", "options": {}},
                 {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
                 {"id": "organize", "options": {
-                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
-                    "indexByName": {"Time": 0, "job": 1, "Line": 2},
-                    "renameByName": {"Time": "Time", "job": "App/Job", "Line": "Error Message"}
+                    "excludeByName": {"id": true, "tsNs": true},
+                    "indexByName": {"Time": 0, "Line": 1, "labels": 2, "job": 3, "instance": 4},
+                    "renameByName": {"Time": "Time", "Line": "Error Message", "labels": "Labels", "job": "App/Job", "instance": "Instance"}
                 }}
             ],
             "type": "table"
@@ -1538,16 +1540,17 @@
             "targets": [{
                 "datasource": {"type": "loki", "uid": "${datasource}"},
                 "editorMode": "code",
-                "expr": "{job=\"strapi\"} |~ \"(?i)ceramic\" |~ \"(?i)(error|exception|fatal|critical|permission denied|EACCES|fail)\"",
+                "expr": "{job=~\"strapi.*\"} |~ \"(?i)ceramic\" |~ \"(?i)(error|exception|fatal|critical|permission denied|EACCES|fail)\"",
                 "refId": "A"
             }],
             "title": "🔴 Ceramic Errors - All Instances",
             "transformations": [
+                {"id": "merge", "options": {}},
                 {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
                 {"id": "organize", "options": {
-                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
-                    "indexByName": {"Time": 0, "instance": 1, "job": 2, "Line": 3},
-                    "renameByName": {"Time": "Time", "instance": "Instance", "job": "App/Job", "Line": "Error Message"}
+                    "excludeByName": {"id": true, "tsNs": true},
+                    "indexByName": {"Time": 0, "Line": 1, "labels": 2, "instance": 3, "job": 4},
+                    "renameByName": {"Time": "Time", "Line": "Error Message", "labels": "Labels", "instance": "Instance", "job": "App/Job"}
                 }}
             ],
             "type": "table"
