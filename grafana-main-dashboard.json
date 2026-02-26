@@ -1394,7 +1394,7 @@
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
             "description": "Strapi logs from ceramic home project on ip-172-31-16-15 - text stream format.",
-            "gridPos": {"h": 12, "w": 12, "x": 0, "y": 207},
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 207},
             "id": 404,
             "options": {
                 "dedupStrategy": "none",
@@ -1419,7 +1419,7 @@
         {
             "datasource": {"type": "loki", "uid": "${datasource}"},
             "description": "Strapi logs from hypnotic project on ip-172-31-26-6 - text stream format.",
-            "gridPos": {"h": 12, "w": 12, "x": 12, "y": 207},
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 219},
             "id": 405,
             "options": {
                 "dedupStrategy": "none",
@@ -1452,7 +1452,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 10, "w": 12, "x": 0, "y": 219},
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 231},
             "id": 406,
             "options": {
                 "cellHeight": "sm",
@@ -1489,7 +1489,7 @@
                 },
                 "overrides": []
             },
-            "gridPos": {"h": 10, "w": 12, "x": 12, "y": 219},
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 241},
             "id": 407,
             "options": {
                 "cellHeight": "sm",
@@ -1511,6 +1511,43 @@
                     "excludeByName": {"id": true, "tsNs": true, "labels": true},
                     "indexByName": {"Time": 0, "job": 1, "Line": 2},
                     "renameByName": {"Time": "Time", "job": "App/Job", "Line": "Error Message"}
+                }}
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All Strapi errors mentioning ceramic - from any instance (e.g. EACCES, permission denied, strapi-ceramic path).",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 251},
+            "id": 408,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\"} |~ \"(?i)ceramic\" |~ \"(?i)(error|exception|fatal|critical|permission denied|EACCES|fail)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Ceramic Errors - All Instances",
+            "transformations": [
+                {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
+                {"id": "organize", "options": {
+                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                    "indexByName": {"Time": 0, "instance": 1, "job": 2, "Line": 3},
+                    "renameByName": {"Time": "Time", "instance": "Instance", "job": "App/Job", "Line": "Error Message"}
                 }}
             ],
             "type": "table"
