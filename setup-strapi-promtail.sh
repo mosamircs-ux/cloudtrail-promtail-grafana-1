@@ -5,6 +5,9 @@ set -e
 
 echo "=== Strapi Logs → Promtail Setup ==="
 echo ""
+echo "   Run this on the EC2 instance you want logs from!"
+echo "   Ceramic Home = ip-172-31-16-15 | Hypnotic = ip-172-31-26-6"
+echo ""
 
 # 1. Find PM2 logs directory
 echo "1. Finding PM2 log directory..."

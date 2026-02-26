@@ -53,6 +53,29 @@ Files: `<app-name>-out.log` (stdout/Pino) and `<app-name>-error.log` (stderr)
 
 ## Troubleshooting
 
-- **No logs**: Run `pm2 list` to confirm app name; use `strapi*.log` or `my-app*.log` as glob
+- **No logs**: Run `pm2 list` to confirm app name; use `strapi*.log` or `strapi-ceramic*.log` as glob
 - **Promtail fails**: `sudo journalctl -u promtail -n 30`
 - **Permissions**: `sudo chmod 644 ~/.pm2/logs/*.log`
+
+### "No data" in Ceramic Home panel (ip-172-31-16-15)
+
+The Ceramic panel shows data only when Promtail runs **on that specific EC2 instance**. Run this on **ip-172-31-16-15** (SSH to Ceramic Home server):
+
+```bash
+# 1. SSH to Ceramic Home EC2
+ssh ubuntu@<CERAMIC-EC2-IP>
+
+# 2. Ensure project is present (clone or scp if needed)
+cd ~/cloudtrail-promtail-grafana-1
+# If missing: git clone <repo> .  OR  scp -r ... from your machine
+
+# 3. Run setup - when prompted enter: strapi-ceramic
+chmod +x setup-strapi-promtail.sh
+./setup-strapi-promtail.sh
+
+# 4. Verify (hostname must be ip-172-31-16-15)
+hostname
+sudo systemctl status promtail
+```
+
+**Diagnostic script** – run `./troubleshoot-strapi-logs.sh` to check hostname, PM2, Promtail config.
