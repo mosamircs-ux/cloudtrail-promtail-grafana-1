@@ -9,7 +9,17 @@ Add Strapi (PM2) application logs to your Grafana dashboard.
 
 ## Quick setup
 
-Run on the Strapi EC2:
+### Ceramic Home (ip-172-31-16-15) – one command, no prompts
+
+```bash
+cd cloudtrail-promtail-grafana-1
+chmod +x setup-ceramic-promtail.sh
+./setup-ceramic-promtail.sh
+```
+
+Uses app name `strapi`, resets Promtail positions to re-read logs, no input required.
+
+### General setup (interactive)
 
 ```bash
 cd cloudtrail-promtail-grafana-1
