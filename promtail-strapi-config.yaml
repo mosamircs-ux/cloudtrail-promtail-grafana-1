@@ -1,11 +1,10 @@
 # Promtail config for EC2 running Strapi (PM2) - merge with promtail-ec2-config or use standalone
 #
-# 1. Set STRAPI_LOG_PATH - full glob path to PM2 logs, e.g.:
-#    - /home/ubuntu/.pm2/logs/strapi*.log   (Strapi app named "strapi")
-#    - /home/ec2-user/.pm2/logs/*.log       (all PM2 apps)
+# 1. Set STRAPI_LOG_PATH and STRAPI_ERROR_PATH (setup-strapi-promtail.sh fills these)
+#    STRAPI_LOG_PATH  = main logs (out + all), e.g. /home/ubuntu/.pm2/logs/strapi-ceramic*.log
+#    STRAPI_ERROR_PATH = error logs only, e.g. /home/ubuntu/.pm2/logs/strapi-ceramic-error.log
 #
-# 2. Deploy: run setup-strapi-promtail.sh (auto-detects path) or:
-#    sed -i "s|STRAPI_LOG_PATH|/home/ubuntu/.pm2/logs/strapi*.log|g; s/INSTANCE_ID/$(hostname)/" promtail-strapi-config.yaml
+# 2. Deploy: run setup-strapi-promtail.sh (auto-detects path)
 
 server:
   http_listen_port: 9080
@@ -30,7 +29,7 @@ scrape_configs:
           __path__: /var/log/syslog
     pipeline_stages: []
 
-  # Strapi / PM2 logs (Pino JSON: {"level":30,"time":...,"msg":"..."})
+  # Strapi / PM2 stdout logs (Pino JSON)
   # Pino levels: 10=trace, 20=debug, 30=info, 40=warn, 50=error, 60=fatal
   - job_name: strapi
     static_configs:
@@ -48,3 +47,20 @@ scrape_configs:
             msg: msg
       - labels:
           level:
+
+  # Strapi / PM2 error logs (stderr - plain text or JSON) - explicit scrape for Grafana errors table
+  - job_name: strapi
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: strapi
+          instance: INSTANCE_ID
+          log_source: error
+        __path__: STRAPI_ERROR_PATH
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            time: time
+            msg: msg

@@ -1440,6 +1440,80 @@
             }],
             "title": "📋 Strapi Logs - Hypnotic (ip-172-31-26-6)",
             "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-level logs from ceramic home Strapi.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 12, "x": 0, "y": 219},
+            "id": 406,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-16-15\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors Only - Ceramic Home (ip-172-31-16-15)",
+            "transformations": [
+                {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
+                {"id": "organize", "options": {
+                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                    "indexByName": {"Time": 0, "job": 1, "Line": 2},
+                    "renameByName": {"Time": "Time", "job": "App/Job", "Line": "Error Message"}
+                }}
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-level logs from hypnotic Strapi.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 12, "x": 12, "y": 219},
+            "id": 407,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-26-6\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors Only - Hypnotic (ip-172-31-26-6)",
+            "transformations": [
+                {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
+                {"id": "organize", "options": {
+                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                    "indexByName": {"Time": 0, "job": 1, "Line": 2},
+                    "renameByName": {"Time": "Time", "job": "App/Job", "Line": "Error Message"}
+                }}
+            ],
+            "type": "table"
         }
     ],
     "refresh": "30s",

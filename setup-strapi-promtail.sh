@@ -56,6 +56,18 @@ fi
 
 STRAPI_LOG_PATH="$PM2_LOG_PATH/$APP_PATTERN"
 
+# Explicit error log path - ensures PM2 -error.log reaches Grafana
+if [ -n "$APP_NAME" ]; then
+    STRAPI_ERROR_PATH="$PM2_LOG_PATH/${APP_NAME}-error.log"
+else
+    STRAPI_ERROR_PATH="$PM2_LOG_PATH/*-error.log"
+fi
+echo "   Error logs path: $STRAPI_ERROR_PATH"
+# Warn if error log doesn't exist yet (PM2 creates it when first error occurs)
+if [ -n "$APP_NAME" ] && [ ! -f "$STRAPI_ERROR_PATH" ]; then
+    echo "   ⚠ Error file not yet created (PM2 creates it on first stderr output)"
+fi
+
 # 3. Ensure Promtail is installed
 echo ""
 echo "2. Checking Promtail installation..."
@@ -88,7 +100,8 @@ sudo mkdir -p /var/lib/promtail
 
 # Copy and customize config
 sed "s/INSTANCE_ID/$INSTANCE_ID/g" "$SCRIPT_DIR/promtail-strapi-config.yaml" | \
-    sed "s|STRAPI_LOG_PATH|$STRAPI_LOG_PATH|g" > /tmp/promtail-config.yaml
+    sed "s|STRAPI_LOG_PATH|$STRAPI_LOG_PATH|g" | \
+    sed "s|STRAPI_ERROR_PATH|$STRAPI_ERROR_PATH|g" > /tmp/promtail-config.yaml
 
 # Amazon Linux uses /var/log/messages, Ubuntu uses /var/log/syslog - fix if syslog missing
 if [ ! -f /var/log/syslog ] && [ -f /var/log/messages ]; then
@@ -104,14 +117,16 @@ LOKI_URL=${LOKI_URL:-http://157.175.59.166:3100/loki/api/v1/push}
 sed -i "s|url: .*|url: $LOKI_URL|" /tmp/promtail-config.yaml
 
 sudo cp /tmp/promtail-config.yaml /etc/promtail/promtail-config.yaml
-echo "   ✓ Config installed with Strapi path: $STRAPI_LOG_PATH"
+echo "   ✓ Config installed - logs: $STRAPI_LOG_PATH"
+echo "   ✓ Error logs: $STRAPI_ERROR_PATH"
 
-# 5. Fix permissions
+# 5. Fix permissions (includes both -out.log and -error.log)
 echo ""
 echo "4. Setting log permissions..."
 sudo chmod 644 "$PM2_LOG_PATH"/*.log 2>/dev/null || true
 sudo chmod 755 "$PM2_LOG_PATH"
 echo "   ✓ Logs readable"
+echo "   (Includes: *-out.log and *-error.log - errors flow to Loki)"
 
 # 6. Create/update service
 echo ""
@@ -156,7 +171,8 @@ echo ""
 echo "Next steps:"
 echo "  1. Wait 30-60 seconds for logs to appear"
 echo "  2. In Grafana → Explore, query: {job=\"strapi\"}"
-echo "  3. Trigger some Strapi activity to generate logs"
+echo "  3. Dashboard has 'Errors Only' tables for Ceramic & Hypnotic"
+echo "  4. Trigger some Strapi activity to generate logs"
 echo ""
 echo "Instance name in dashboard: $INSTANCE_ID"
 echo ""
