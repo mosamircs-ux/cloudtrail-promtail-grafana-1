@@ -136,40 +136,19 @@
         "type": "loki",
         "uid": "${datasource}"
       },
-      "description": "One report table per instance (repeat panel). Shows top apps/jobs with errors on that instance for the selected time range. Export as CSV from panel menu → Inspect → Data.",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 1 },
-              { "color": "red", "value": 10 }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Errors" },
-            "properties": [
-              { "id": "custom.displayMode", "value": "color-background-solid" }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 11 },
+      "description": "Actual error logs (messages) for this instance (repeat panel). Filter using the dashboard variables. Use this to read the real errors, not just counts.",
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 11 },
       "id": 4,
       "maxPerRow": 1,
       "options": {
-        "cellHeight": "sm",
-        "footer": { "countRows": true, "reducer": ["sum"], "show": true },
-        "showHeader": true,
-        "sortBy": [{ "desc": true, "displayName": "Errors" }]
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
       },
       "pluginVersion": "10.0.0",
       "repeat": "instance",
@@ -178,28 +157,12 @@
         {
           "datasource": { "type": "loki", "uid": "${datasource}" },
           "editorMode": "code",
-          "expr": "topk(20, sum by (job) (count_over_time({instance=\"$instance\", job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\" [$__range])))",
-          "legendFormat": "{{job}}",
-          "range": true,
+          "expr": "{instance=\"$instance\", job=~\"$app\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
           "refId": "A"
         }
       ],
-      "title": "🔴 Top Errors by App on $instance",
-      "transformations": [
-        { "id": "merge", "options": {} },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": { "Time": true },
-            "indexByName": { "job": 0, "Value": 1 },
-            "renameByName": {
-              "job": "Application",
-              "Value": "Errors"
-            }
-          }
-        }
-      ],
-      "type": "table"
+      "title": "🔴 Errors (messages) on $instance",
+      "type": "logs"
     }
   ],
   "refresh": "30s",
