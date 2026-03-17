@@ -1,0 +1,1764 @@
+{
+    "annotations": {
+        "list": []
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "id": null,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "loki",
+                "uid": "${datasource}"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null}
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0},
+            "id": 1,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "count(sum by (instance) (count_over_time({job=~\".+\"}[15m])))",
+                "refId": "A"
+            }],
+            "title": "EC2 / Instances Total",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 4, "y": 0},
+            "id": 2,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "count(sum by (instance) (count_over_time({job=~\".+\"}[15m])) > 0)",
+                "refId": "A"
+            }],
+            "title": "EC2 Up (last 15 min)",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {"color": "green", "value": null},
+                            {"color": "red", "value": 1}
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 8, "y": 0},
+            "id": 3,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "sum(count_over_time({job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical)\" [$__range]))",
+                "refId": "A"
+            }],
+            "title": "Total Errors (selected time)",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 4, "w": 4, "x": 12, "y": 0},
+            "id": 4,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "count(count by (job) (count_over_time({job=~\".+\"}[$__range])))",
+                "refId": "A"
+            }],
+            "title": "Applications / Jobs",
+            "type": "stat"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All EC2 instances seen in the selected time range. Status = UP (green) if logs received in last 5 min, DOWN (red) if no recent logs.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "thresholds"},
+                    "custom": {
+                        "align": "auto",
+                        "cellOptions": {"type": "auto"},
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Status"},
+                        "properties": [
+                            {
+                                "id": "custom.displayMode",
+                                "value": "color-background-solid"
+                            },
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {"options": {"0": {"color": "red", "index": 0, "text": "DOWN"}}, "type": "value"},
+                                    {"options": {"pattern": "^[1-9].*", "result": {"color": "green", "text": "UP"}}, "type": "regex"}
+                                ]
+                            },
+                            {"id": "custom.width", "value": 100}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Total Logs"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 150}},
+                            {
+                                "id": "thresholds",
+                                "value": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Recent Logs (5m)"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 120}},
+                            {
+                                "id": "thresholds",
+                                "value": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance / Host"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6},
+                                            "ip-172-31-16-15": {"text": "ip-172-31-16-15 (ceramic home)", "index": 7},
+                                            "ip-172-31-26-6": {"text": "ip-172-31-26-6 (hypnotic)", "index": 8}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 4},
+            "id": 5,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "fields": "", "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": false, "displayName": "Status"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[$__range]))",
+                    "legendFormat": "{{instance}} {{job}}",
+                    "range": true,
+                    "refId": "total"
+                },
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[5m]))",
+                    "legendFormat": "{{instance}} {{job}}",
+                    "range": true,
+                    "refId": "recent",
+                    "hide": false
+                }
+            ],
+            "title": "EC2 Status - Which Instances Are UP / DOWN",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true},
+                        "indexByName": {"instance": 0, "job": 1, "Value #recent": 2, "Value #total": 3},
+                        "renameByName": {
+                            "instance": "Instance / Host",
+                            "job": "Application",
+                            "Value #recent": "Status",
+                            "Value #total": "Total Logs"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Instances that stopped sending logs. These may be crashed, stopped, or have Promtail issues.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "fixed", "fixedColor": "red"},
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Status"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {"id": "color", "value": {"mode": "fixed", "fixedColor": "red"}},
+                            {"id": "custom.width", "value": 100}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance / Host"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6},
+                                            "ip-172-31-16-15": {"text": "ip-172-31-16-15 (ceramic home)", "index": 7},
+                                            "ip-172-31-26-6": {"text": "ip-172-31-26-6 (hypnotic)", "index": 8}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 5, "w": 12, "x": 0, "y": 14},
+            "id": 13,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "(sum by (instance) (count_over_time({job=~\".+\"}[$__range]))) unless (sum by (instance) (count_over_time({job=~\".+\"}[5m])))",
+                    "legendFormat": "{{instance}}",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "EC2 DOWN - No Logs in Last 5 Minutes",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true, "Value": true},
+                        "indexByName": {"instance": 0},
+                        "renameByName": {"instance": "Instance / Host"}
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {"alias": "Status", "mode": "reduceRow", "reduce": {"include": [], "reducer": "count"}}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Status": true},
+                        "renameByName": {}
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Instances actively sending logs right now.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "fixed", "fixedColor": "green"},
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Logs (5m)"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "custom.cellOptions", "value": {"mode": "gradient", "minVizWidth": 0, "maxVizWidth": 120}},
+                            {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance / Host"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6},
+                                            "ip-172-31-16-15": {"text": "ip-172-31-16-15 (ceramic home)", "index": 7},
+                                            "ip-172-31-26-6": {"text": "ip-172-31-26-6 (hypnotic)", "index": 8}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 5, "w": 12, "x": 12, "y": 14},
+            "id": 14,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Logs (5m)"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "sum by (instance) (count_over_time({job=~\".+\"}[5m]))",
+                "legendFormat": "{{instance}}",
+                "range": true,
+                "refId": "A"
+            }],
+            "title": "EC2 UP - Active Now",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true},
+                        "indexByName": {"instance": 0, "Value": 1},
+                        "renameByName": {"instance": "Instance / Host", "Value": "Logs (5m)"}
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All error-level logs from every EC2 and application in one place.",
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 19},
+            "id": 6,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "All Errors - Every EC2 & Application",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Same error logs in organized table format - easy to scan and sort.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Status"},
+                        "properties": [{
+                            "id": "mappings",
+                            "value": [
+                                {
+                                    "options": {
+                                        "true": {"color": "green", "index": 0, "text": "✓ OK"},
+                                        "false": {"color": "red", "index": 1, "text": "✗ Failed"}
+                                    },
+                                    "type": "value"
+                                }
+                            ]
+                        }]
+                    }
+                ]
+            },
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 31},
+            "id": 10,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": false, "reducer": ["sum"], "show": false},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "Errors Table - Organized View",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "json", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "id": true,
+                            "labels": true,
+                            "tsNs": true
+                        },
+                        "indexByName": {
+                            "Time": 0,
+                            "timestamp": 0,
+                            "event_name": 1,
+                            "event_source": 2,
+                            "user_type": 3,
+                            "iam_username": 4,
+                            "principal_id": 5,
+                            "arn": 6,
+                            "access_key_id": 7,
+                            "source_ip": 8,
+                            "user_agent": 9,
+                            "aws_region": 10,
+                            "error_code": 11,
+                            "errorCode": 11,
+                            "error_message": 12,
+                            "errorMessage": 12,
+                            "resources": 13,
+                            "request_parameters": 14,
+                            "response_elements": 15,
+                            "success": 16,
+                            "Line": 17,
+                            "level": 18,
+                            "msg": 19,
+                            "message": 19
+                        },
+                        "renameByName": {
+                            "Time": "Time",
+                            "timestamp": "Time",
+                            "event_name": "Event",
+                            "event_source": "Service",
+                            "user_type": "User Type",
+                            "iam_username": "IAM User",
+                            "principal_id": "Principal ID",
+                            "arn": "ARN",
+                            "access_key_id": "Access Key",
+                            "source_ip": "Source IP",
+                            "user_agent": "User Agent",
+                            "aws_region": "Region",
+                            "error_code": "Error Code",
+                            "errorCode": "Error Code",
+                            "error_message": "Error Message",
+                            "errorMessage": "Error Message",
+                            "resources": "Resources",
+                            "request_parameters": "Request Params",
+                            "response_elements": "Response",
+                            "success": "Status",
+                            "Line": "Raw Log / Message",
+                            "level": "Level",
+                            "msg": "Message",
+                            "message": "Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Only CloudTrail events where the API call actually failed. Error Code and Error Message are populated here.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 43},
+            "id": 11,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": false, "reducer": ["sum"], "show": false},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"cloudtrail\"} | json | success=\"false\"",
+                "refId": "A"
+            }],
+            "title": "CloudTrail Failures Only – Error Messages Populated",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "json", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "labels": true, "tsNs": true, "request_parameters": true, "response_elements": true},
+                        "indexByName": {
+                            "timestamp": 0,
+                            "event_name": 1,
+                            "event_source": 2,
+                            "iam_username": 3,
+                            "error_code": 4,
+                            "errorCode": 4,
+                            "error_message": 5,
+                            "errorMessage": 5,
+                            "source_ip": 6,
+                            "aws_region": 7,
+                            "resources": 8
+                        },
+                        "renameByName": {
+                            "timestamp": "Time",
+                            "event_name": "Event",
+                            "event_source": "Service",
+                            "iam_username": "IAM User",
+                            "error_code": "Error Code",
+                            "errorCode": "Error Code",
+                            "error_message": "Error Message",
+                            "errorMessage": "Error Message",
+                            "source_ip": "Source IP",
+                            "aws_region": "Region",
+                            "resources": "Resources"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error count per instance. Identify which EC2 has the most problems.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 53},
+            "id": 7,
+            "options": {
+                "displayLabels": ["name", "percent"],
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "topk(15, sum by (instance) (count_over_time({job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal)\" [$__range])))",
+                "legendFormat": "{{instance}}",
+                "refId": "A"
+            }],
+            "title": "Errors by Instance (Which EC2 Has Most Errors)",
+            "type": "piechart"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error count per application/job.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 53},
+            "id": 8,
+            "options": {
+                "displayLabels": ["name", "percent"],
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "topk(15, sum by (job) (count_over_time({job=~\".+\"} |~ \"(?i)(error|exception|fail|fatal)\" [$__range])))",
+                "legendFormat": "{{job}}",
+                "refId": "A"
+            }],
+            "title": "Errors by Application",
+            "type": "piechart"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Log volume over time per instance. Gaps = possible downtime.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 2,
+                        "pointSize": 5,
+                        "showPoints": "never"
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 61},
+            "id": 9,
+            "options": {
+                "legend": {"displayMode": "table", "placement": "bottom", "showLegend": true, "values": ["mean", "max"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "expr": "sum by (instance, job) (count_over_time({job=~\".+\"}[$__interval]))",
+                "legendFormat": "{{instance}}",
+                "refId": "A"
+            }],
+            "title": "Log Volume Over Time by Instance",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Laravel application logs. Deploy Promtail with job=laravel on the EC2 where Laravel runs.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [{
+                            "id": "mappings",
+                            "value": [
+                                {"options": {"ERROR": {"color": "red"}, "from": "ERROR", "to": "ERROR", "type": "value"}, "result": {"color": "red", "text": "ERROR"}},
+                                {"options": {"CRITICAL": {"color": "red"}, "from": "CRITICAL", "to": "CRITICAL", "type": "value"}, "result": {"color": "red", "text": "CRITICAL"}},
+                                {"options": {"WARNING": {"color": "orange"}, "from": "WARNING", "to": "WARNING", "type": "value"}, "result": {"color": "orange", "text": "WARNING"}},
+                                {"options": {"INFO": {"color": "blue"}, "from": "INFO", "to": "INFO", "type": "value"}, "result": {"color": "blue", "text": "INFO"}},
+                                {"options": {"DEBUG": {"color": "gray"}, "from": "DEBUG", "to": "DEBUG", "type": "value"}, "result": {"color": "gray", "text": "DEBUG"}}
+                            ]
+                        }]
+                    }
+                ]
+            },
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 69},
+            "id": 12,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": false, "reducer": ["sum"], "show": false},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"laravel\"}",
+                "refId": "A"
+            }],
+            "title": "Laravel Logs",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "regex", "source": "Line", "pattern": "^\\[(?P<timestamp>[^\\]]+)\\]\\s+(?P<env>\\w+)\\.(?P<level>\\w+):\\s+(?P<message>.*)$"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "labels": true, "tsNs": true},
+                        "indexByName": {"Time": 0, "timestamp": 0, "level": 1, "env": 2, "message": 3, "Line": 4},
+                        "renameByName": {"Time": "Time", "timestamp": "Time", "level": "Level", "env": "Env", "message": "Message", "Line": "Raw"}
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-only logs from all instances. Filter by Instance above to see errors from specific EC2s.",
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 81},
+            "id": 15,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\".+\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "Errors by Instance (filter above)",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Structured table view of all logs - shows Instance, Job, Level, and Message. Use Instance filter above.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "level"},
+                        "properties": [{
+                            "id": "mappings",
+                            "value": [
+                                {
+                                    "options": {
+                                        "ERROR": {"color": "red", "index": 0, "text": "ERROR"},
+                                        "CRITICAL": {"color": "red", "index": 1, "text": "CRITICAL"},
+                                        "WARNING": {"color": "orange", "index": 2, "text": "WARNING"},
+                                        "INFO": {"color": "blue", "index": 3, "text": "INFO"},
+                                        "DEBUG": {"color": "gray", "index": 4, "text": "DEBUG"}
+                                    },
+                                    "type": "value"
+                                }
+                            ]
+                        }]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6},
+                                            "ip-172-31-16-15": {"text": "ip-172-31-16-15 (ceramic home)", "index": 7},
+                                            "ip-172-31-26-6": {"text": "ip-172-31-26-6 (hypnotic)", "index": 8}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 95},
+            "id": 16,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\".+\", instance=~\"$instance\"}",
+                "refId": "A"
+            }],
+            "title": "All Logs Table - By Instance",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true},
+                        "indexByName": {"Time": 0, "labels": 1, "instance": 2, "job": 3, "level": 4, "Line": 5},
+                        "renameByName": {"Time": "Time", "labels": "Labels", "instance": "Instance", "job": "Job/App", "level": "Level", "Line": "Message"}
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 109},
+            "id": 100,
+            "panels": [],
+            "title": "📁 Logs Per Project / Application",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Select a project/app from the dropdown above to see its errors only. Each Laravel app, syslog, cloudtrail etc. is a separate 'job'.",
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 110},
+            "id": 17,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\"$app\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "Errors by Project/App (use filters above)",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Detailed table view of logs per project. Filter by App/Project and Instance using dropdowns above.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [
+                            {"id": "custom.width", "value": 80},
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {"options": {"ERROR": {"color": "red", "index": 0, "text": "ERROR"}}, "type": "value"},
+                                    {"options": {"CRITICAL": {"color": "red", "index": 1, "text": "CRITICAL"}}, "type": "value"},
+                                    {"options": {"WARNING": {"color": "orange", "index": 2, "text": "WARNING"}}, "type": "value"},
+                                    {"options": {"INFO": {"color": "blue", "index": 3, "text": "INFO"}}, "type": "value"},
+                                    {"options": {"DEBUG": {"color": "gray", "index": 4, "text": "DEBUG"}}, "type": "value"},
+                                    {"options": {"error": {"color": "red", "index": 5, "text": "ERROR"}}, "type": "value"},
+                                    {"options": {"warn": {"color": "orange", "index": 6, "text": "WARN"}}, "type": "value"},
+                                    {"options": {"info": {"color": "blue", "index": 7, "text": "INFO"}}, "type": "value"}
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Project"},
+                        "properties": [
+                            {"id": "custom.width", "value": 150},
+                            {"id": "custom.displayMode", "value": "color-text"}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance"},
+                        "properties": [
+                            {"id": "custom.width", "value": 150},
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6},
+                                            "ip-172-31-16-15": {"text": "ip-172-31-16-15 (ceramic home)", "index": 7},
+                                            "ip-172-31-26-6": {"text": "ip-172-31-26-6 (hypnotic)", "index": 8}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Message"},
+                        "properties": [{"id": "custom.width", "value": 600}]
+                    }
+                ]
+            },
+            "gridPos": {"h": 16, "w": 24, "x": 0, "y": 124},
+            "id": 18,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=~\"$app\", instance=~\"$instance\"}",
+                "refId": "A"
+            }],
+            "title": "Project Logs Table - Detailed View",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "job": 1, "instance": 2, "level": 3, "Line": 4, "message": 5, "env": 6},
+                        "renameByName": {
+                            "Time": "Time",
+                            "job": "Project",
+                            "instance": "Instance",
+                            "level": "Level",
+                            "Line": "Raw Log",
+                            "message": "Message",
+                            "env": "Environment"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Shows log count per project/app over time. Useful to see which apps are most active.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {
+                        "drawStyle": "bars",
+                        "fillOpacity": 80,
+                        "lineWidth": 1,
+                        "stacking": {"mode": "normal", "group": "A"}
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 140},
+            "id": 19,
+            "options": {
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["sum"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "sum by (job) (count_over_time({job=~\"$app\", instance=~\"$instance\"}[$__interval]))",
+                "legendFormat": "{{job}}",
+                "refId": "A"
+            }],
+            "title": "Log Volume by Project",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error count per project. Quickly identify which app has the most errors.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {"mode": "palette-classic"},
+                    "custom": {"hideFrom": {"legend": false, "tooltip": false, "viz": false}}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 140},
+            "id": 20,
+            "options": {
+                "displayLabels": ["name", "value"],
+                "legend": {"displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"]}
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "sum by (job) (count_over_time({job=~\"$app\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail|fatal|critical)\" [$__range]))",
+                "legendFormat": "{{job}}",
+                "refId": "A"
+            }],
+            "title": "Errors by Project",
+            "type": "piechart"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Summary of each project: instance, log count, and error count.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Errors"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {
+                                "id": "thresholds",
+                                "value": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 10}]}
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Total Logs"},
+                        "properties": [
+                            {"id": "custom.displayMode", "value": "gradient-gauge"},
+                            {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "Instance"},
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "type": "value",
+                                        "options": {
+                                            "ip-10-0-156-209": {"text": "ip-10-0-156-209 (e-invoice)", "index": 0},
+                                            "ip-172-31-10-39": {"text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "index": 1},
+                                            "ip-172-31-14-189": {"text": "ip-172-31-14-189 (MHG Trading CJSC)", "index": 2},
+                                            "ip-172-31-25-86": {"text": "ip-172-31-25-86 (Hatch Sanitary)", "index": 3},
+                                            "ip-172-31-44-113": {"text": "ip-172-31-44-113 (cc-evolution)", "index": 4},
+                                            "ip-172-31-8-125": {"text": "ip-172-31-8-125 (maintenance_rem)", "index": 5},
+                                            "ip-172-31-9-167": {"text": "ip-172-31-9-167 (maintenace-request-production)", "index": 6},
+                                            "ip-172-31-16-15": {"text": "ip-172-31-16-15 (ceramic home)", "index": 7},
+                                            "ip-172-31-26-6": {"text": "ip-172-31-26-6 (hypnotic)", "index": 8}
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 148},
+            "id": 21,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Total Logs"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (job, instance) (count_over_time({job=~\"$app\", instance=~\"$instance\"}[$__range]))",
+                    "legendFormat": "{{job}} - {{instance}}",
+                    "range": true,
+                    "refId": "total"
+                },
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "sum by (job, instance) (count_over_time({job=~\"$app\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail)\" [$__range]))",
+                    "legendFormat": "{{job}} - {{instance}}",
+                    "range": true,
+                    "refId": "errors",
+                    "hide": false
+                }
+            ],
+            "title": "Project Summary - Logs & Errors per App",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"Time": true},
+                        "indexByName": {"job": 0, "instance": 1, "Value #total": 2, "Value #errors": 3},
+                        "renameByName": {
+                            "job": "Project/App",
+                            "instance": "Instance",
+                            "Value #total": "Total Logs",
+                            "Value #errors": "Errors"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 156},
+            "id": 200,
+            "panels": [],
+            "title": "🖥️ Logs Per Instance (Individual EC2 Tables)",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-only logs from this instance.",
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 157},
+            "id": 201,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+            },
+            "pluginVersion": "10.0.0",
+            "repeat": "instance_named",
+            "repeatDirection": "v",
+            "maxPerRow": 1,
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=\"${instance_named}\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors - $instance_named",
+            "type": "logs"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 169},
+            "id": 400,
+            "panels": [],
+            "title": "🖥️ Instance 10.0.156.209 - Dedicated Logs",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-only logs from this instance in log viewer format.",
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 170},
+            "id": 401,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=~\".*10.0.156.209.*|.*ip-10-0-156-209.*\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors - 10.0.156.209",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Logs from 172.31.14.189 in table format with columns.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [
+                            {"id": "custom.width", "value": 80},
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {"id": "mappings", "value": [
+                                {"options": {"ERROR": {"color": "red", "text": "ERROR"}}, "type": "value"},
+                                {"options": {"error": {"color": "red", "text": "ERROR"}}, "type": "value"},
+                                {"options": {"CRITICAL": {"color": "red", "text": "CRITICAL"}}, "type": "value"},
+                                {"options": {"INFO": {"color": "blue", "text": "INFO"}}, "type": "value"},
+                                {"options": {"info": {"color": "blue", "text": "INFO"}}, "type": "value"},
+                                {"options": {"WARNING": {"color": "orange", "text": "WARNING"}}, "type": "value"},
+                                {"options": {"warn": {"color": "orange", "text": "WARN"}}, "type": "value"}
+                            ]}
+                        ]
+                    },
+                    {
+                        "matcher": {"id": "byName", "options": "App/Job"},
+                        "properties": [{"id": "custom.width", "value": 120}]
+                    }
+                ]
+            },
+            "gridPos": {"h": 14, "w": 24, "x": 0, "y": 182},
+            "id": 402,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=~\".*10.0.156.209.*|.*ip-10-0-156-209.*\"}",
+                "refId": "A"
+            }],
+            "title": "📊 Logs Table - 10.0.156.209",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "job": 1, "level": 2, "Line": 3, "message": 4},
+                        "renameByName": {
+                            "Time": "Time",
+                            "job": "App/Job",
+                            "level": "Level",
+                            "Line": "Log Message",
+                            "message": "Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Only ERROR logs from 172.31.14.189",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 196},
+            "id": 403,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{instance=~\".*10.0.156.209.*|.*ip-10-0-156-209.*\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors Only - 10.0.156.209",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {"format": "auto", "source": "Line"}
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "job": 1, "Line": 2},
+                        "renameByName": {
+                            "Time": "Time",
+                            "job": "App/Job",
+                            "Line": "Error Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 206},
+            "id": 500,
+            "panels": [],
+            "title": "📦 Strapi - Ceramic Home & Hypnotic",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Strapi error-only logs from ceramic home project on ip-172-31-16-15 - text stream format.",
+            "gridPos": {"h": 12, "w": 12, "x": 0, "y": 207},
+            "id": 404,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-16-15\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Strapi Errors - Ceramic Home (ip-172-31-16-15)",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Strapi error-only logs from hypnotic project on ip-172-31-26-6 - text stream format.",
+            "gridPos": {"h": 12, "w": 12, "x": 12, "y": 207},
+            "id": 405,
+            "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": true,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": true
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-26-6\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Strapi Errors - Hypnotic (ip-172-31-26-6)",
+            "type": "logs"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-level logs from ceramic home Strapi.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 12, "x": 0, "y": 219},
+            "id": 406,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-16-15\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors Only - Ceramic Home (ip-172-31-16-15)",
+            "transformations": [
+                {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
+                {"id": "organize", "options": {
+                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                    "indexByName": {"Time": 0, "job": 1, "Line": 2},
+                    "renameByName": {"Time": "Time", "job": "App/Job", "Line": "Error Message"}
+                }}
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-level logs from hypnotic Strapi.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto"},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": []
+            },
+            "gridPos": {"h": 10, "w": 12, "x": 12, "y": 219},
+            "id": 407,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [{
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "editorMode": "code",
+                "expr": "{job=\"strapi\", instance=\"ip-172-31-26-6\"} |~ \"(?i)(error|exception|fatal|critical)\"",
+                "refId": "A"
+            }],
+            "title": "🔴 Errors Only - Hypnotic (ip-172-31-26-6)",
+            "transformations": [
+                {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
+                {"id": "organize", "options": {
+                    "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                    "indexByName": {"Time": 0, "job": 1, "Line": 2},
+                    "renameByName": {"Time": "Time", "job": "App/Job", "Line": "Error Message"}
+                }}
+            ],
+            "type": "table"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {"h": 1, "w": 24, "x": 0, "y": 229},
+            "id": 700,
+            "panels": [],
+            "title": "🧨 Errors - Full & Per Application (Tables)",
+            "type": "row"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "All error logs from all apps and instances in one clear table.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [
+                            {"id": "custom.width", "value": 90},
+                            {"id": "custom.displayMode", "value": "color-background-solid"},
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {"type": "value", "options": {"ERROR": {"color": "red", "text": "ERROR"}}},
+                                    {"type": "value", "options": {"CRITICAL": {"color": "red", "text": "CRITICAL"}}},
+                                    {"type": "value", "options": {"FATAL": {"color": "red", "text": "FATAL"}}},
+                                    {"type": "value", "options": {"WARNING": {"color": "orange", "text": "WARNING"}}},
+                                    {"type": "value", "options": {"WARN": {"color": "orange", "text": "WARN"}}},
+                                    {"type": "value", "options": {"INFO": {"color": "blue", "text": "INFO"}}},
+                                    {"type": "value", "options": {"DEBUG": {"color": "gray", "text": "DEBUG"}}}
+                                ]
+                            }
+                        ]
+                    },
+                    {"matcher": {"id": "byName", "options": "Message"}, "properties": [{"id": "custom.width", "value": 700}]}
+                ]
+            },
+            "gridPos": {"h": 12, "w": 24, "x": 0, "y": 230},
+            "id": 701,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "{job=~\".+\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                    "refId": "A"
+                }
+            ],
+            "title": "All Errors (Full Table)",
+            "transformations": [
+                {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "job": 1, "instance": 2, "level": 3, "message": 4, "Line": 4},
+                        "renameByName": {
+                            "job": "Application",
+                            "instance": "Instance",
+                            "level": "Level",
+                            "message": "Message",
+                            "Line": "Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {"type": "loki", "uid": "${datasource}"},
+            "description": "Error-only table for a single app/job. Repeats per selected application.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {"align": "auto", "displayMode": "auto", "filterable": true},
+                    "mappings": [],
+                    "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}
+                },
+                "overrides": [
+                    {
+                        "matcher": {"id": "byName", "options": "Level"},
+                        "properties": [
+                            {"id": "custom.width", "value": 90},
+                            {"id": "custom.displayMode", "value": "color-background-solid"}
+                        ]
+                    },
+                    {"matcher": {"id": "byName", "options": "Message"}, "properties": [{"id": "custom.width", "value": 700}]}
+                ]
+            },
+            "gridPos": {"h": 10, "w": 24, "x": 0, "y": 242},
+            "id": 702,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {"countRows": true, "reducer": ["sum"], "show": true},
+                "showHeader": true,
+                "sortBy": [{"desc": true, "displayName": "Time"}]
+            },
+            "pluginVersion": "10.0.0",
+            "repeat": "app_errors",
+            "repeatDirection": "v",
+            "maxPerRow": 1,
+            "targets": [
+                {
+                    "datasource": {"type": "loki", "uid": "${datasource}"},
+                    "editorMode": "code",
+                    "expr": "{job=\"${app_errors}\", instance=~\"$instance\"} |~ \"(?i)(error|exception|fail|fatal|critical|panic)\"",
+                    "refId": "A"
+                }
+            ],
+            "title": "Errors - ${app_errors}",
+            "transformations": [
+                {"id": "extractFields", "options": {"format": "auto", "source": "Line"}},
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {"id": true, "tsNs": true, "labels": true},
+                        "indexByName": {"Time": 0, "instance": 1, "level": 2, "message": 3, "Line": 3},
+                        "renameByName": {
+                            "instance": "Instance",
+                            "level": "Level",
+                            "message": "Message",
+                            "Line": "Message"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        }
+    ],
+    "refresh": "30s",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": ["main", "ec2", "monitoring", "errors"],
+    "templating": {
+        "list": [
+            {
+                "current": {},
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "definition": "label_values({job=~\".+\"}, instance)",
+                "hide": 0,
+                "includeAll": true,
+                "label": "Instance",
+                "multi": true,
+                "name": "instance",
+                "options": [],
+                "query": "label_values({job=~\".+\"}, instance)",
+                "refresh": 1,
+                "skipUrlSync": false,
+                "sort": 1,
+                "type": "query"
+            },
+            {
+                "current": {
+                    "selected": true,
+                    "text": ["All"],
+                    "value": ["$__all"]
+                },
+                "hide": 0,
+                "includeAll": true,
+                "label": "Instance (Named)",
+                "multi": true,
+                "name": "instance_named",
+                "options": [
+                    {"selected": true, "text": "All", "value": "$__all"},
+                    {"selected": false, "text": "ip-10-0-156-209 (e-invoice)", "value": "ip-10-0-156-209"},
+                    {"selected": false, "text": "ip-172-31-10-39 (promtail_cloudtrail_s3)", "value": "ip-172-31-10-39"},
+                    {"selected": false, "text": "ip-172-31-14-189 (MHG Trading CJSC)", "value": "ip-172-31-14-189"},
+                    {"selected": false, "text": "ip-172-31-25-86 (Hatch Sanitary)", "value": "ip-172-31-25-86"},
+                    {"selected": false, "text": "ip-172-31-44-113 (cc-evolution)", "value": "ip-172-31-44-113"},
+                    {"selected": false, "text": "ip-172-31-8-125 (maintenance_rem)", "value": "ip-172-31-8-125"},
+                    {"selected": false, "text": "ip-172-31-9-167 (maintenace-request-production)", "value": "ip-172-31-9-167"},
+                    {"selected": false, "text": "ip-172-31-16-15 (ceramic home)", "value": "ip-172-31-16-15"},
+                    {"selected": false, "text": "ip-172-31-26-6 (hypnotic)", "value": "ip-172-31-26-6"}
+                ],
+                "query": "ip-10-0-156-209 (e-invoice) : ip-10-0-156-209,ip-172-31-10-39 (promtail_cloudtrail_s3) : ip-172-31-10-39,ip-172-31-14-189 (MHG Trading CJSC) : ip-172-31-14-189,ip-172-31-25-86 (Hatch Sanitary) : ip-172-31-25-86,ip-172-31-44-113 (cc-evolution) : ip-172-31-44-113,ip-172-31-8-125 (maintenance_rem) : ip-172-31-8-125,ip-172-31-9-167 (maintenace-request-production) : ip-172-31-9-167,ip-172-31-16-15 (ceramic home) : ip-172-31-16-15,ip-172-31-26-6 (hypnotic) : ip-172-31-26-6",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "custom"
+            },
+            {
+                "current": {},
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "definition": "label_values({job=~\".+\"}, job)",
+                "hide": 0,
+                "includeAll": true,
+                "label": "App/Project",
+                "multi": true,
+                "name": "app",
+                "options": [],
+                "query": "label_values({job=~\".+\"}, job)",
+                "refresh": 1,
+                "skipUrlSync": false,
+                "sort": 1,
+                "type": "query"
+            },
+            {
+                "current": {
+                    "selected": true,
+                    "text": ["All"],
+                    "value": ["$__all"]
+                },
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "definition": "label_values({job=~\".+\"}, job)",
+                "hide": 0,
+                "includeAll": true,
+                "label": "Errors - App",
+                "multi": true,
+                "name": "app_errors",
+                "options": [],
+                "query": "label_values({job=~\".+\"}, job)",
+                "refresh": 1,
+                "skipUrlSync": false,
+                "sort": 1,
+                "type": "query"
+            },
+            {
+                "current": {},
+                "datasource": {"type": "loki", "uid": "${datasource}"},
+                "hide": 0,
+                "includeAll": false,
+                "label": "Datasource",
+                "multi": false,
+                "name": "datasource",
+                "options": [],
+                "query": "loki",
+                "queryValue": "",
+                "refresh": 1,
+                "skipUrlSync": false,
+                "type": "datasource"
+            }
+        ]
+    },
+    "time": {"from": "now-6h", "to": "now"},
+    "timezone": "browser",
+    "title": "Main - Errors (Full + Per App Tables)",
+    "uid": "main-errors-full-per-app",
+    "version": 1,
+    "weekStart": ""
+}
